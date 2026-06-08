@@ -11,6 +11,7 @@ window.AppData = {
     /* ── 원룸 ─────────────────────────── */
     {
       id:1, type:'oneroom', typeLabel:'원룸',
+      img:'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80',
       title:'홍대입구역 3분 신축 원룸',
       shortAddr:'서교동', fullAddr:'서울시 마포구 서교동 355-8',
       deal:{ type:'monthly', deposit:1000, monthly:65 },
@@ -24,6 +25,7 @@ window.AppData = {
     },
     {
       id:2, type:'oneroom', typeLabel:'원룸',
+      img:'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80',
       title:'연남동 카페거리 전세 원룸',
       shortAddr:'연남동', fullAddr:'서울시 마포구 연남동 228-4',
       deal:{ type:'jeonse', jeonse:14000 },
@@ -37,6 +39,7 @@ window.AppData = {
     },
     {
       id:3, type:'oneroom', typeLabel:'오피스텔',
+      img:'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80',
       title:'상수역 2분 풀옵션 오피스텔',
       shortAddr:'상수동', fullAddr:'서울시 마포구 상수동 87-2',
       deal:{ type:'monthly', deposit:2000, monthly:75 },
@@ -52,6 +55,7 @@ window.AppData = {
     /* ── 오피스 ───────────────────────── */
     {
       id:4, type:'office', typeLabel:'사무실',
+      img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
       title:'서교동 메인 30평 사무실',
       shortAddr:'서교동', fullAddr:'서울시 마포구 서교동 400-1 3층',
       deal:{ type:'monthly', deposit:5000, monthly:220 },
@@ -65,6 +69,7 @@ window.AppData = {
     },
     {
       id:5, type:'office', typeLabel:'공유오피스',
+      img:'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=80',
       title:'연남동 크리에이터 공유오피스',
       shortAddr:'연남동', fullAddr:'서울시 마포구 연남동 239-12 2층',
       deal:{ type:'monthly', deposit:300, monthly:85 },
@@ -80,6 +85,7 @@ window.AppData = {
     /* ── 건물 ─────────────────────────── */
     {
       id:6, type:'building', typeLabel:'건물',
+      img:'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80',
       title:'합정역 꼬마빌딩 5층 (연 수익률 4.8%)',
       shortAddr:'합정동', fullAddr:'서울시 마포구 합정동 383-12',
       deal:{ type:'sale', price:320000 },
@@ -93,6 +99,7 @@ window.AppData = {
     },
     {
       id:7, type:'building', typeLabel:'건물',
+      img:'https://images.unsplash.com/photo-1421955045485-89f27b9d9def?w=600&q=80',
       title:'홍대 상가건물 7층 핵심입지',
       shortAddr:'서교동', fullAddr:'서울시 마포구 서교동 330-5',
       deal:{ type:'sale', price:580000 },
@@ -108,6 +115,7 @@ window.AppData = {
     /* ── 토지 ─────────────────────────── */
     {
       id:8, type:'land', typeLabel:'토지',
+      img:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&q=80',
       title:'동교동 나대지 90평 (2종일반)',
       shortAddr:'동교동', fullAddr:'서울시 마포구 동교동 198-4',
       deal:{ type:'sale', price:280000 },
@@ -121,6 +129,7 @@ window.AppData = {
     },
     {
       id:9, type:'land', typeLabel:'토지',
+      img:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80',
       title:'연남동 주차장 부지 150평',
       shortAddr:'연남동', fullAddr:'서울시 마포구 연남동 245-7',
       deal:{ type:'sale', price:450000 },
@@ -136,6 +145,7 @@ window.AppData = {
     /* ── 건축부지 ─────────────────────── */
     {
       id:10, type:'construction', typeLabel:'건축부지',
+      img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80',
       title:'서교동 신축 개발부지 200평',
       shortAddr:'서교동', fullAddr:'서울시 마포구 서교동 412-3',
       deal:{ type:'sale', price:670000 },

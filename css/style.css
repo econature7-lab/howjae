@@ -563,3 +563,152 @@ select.form-input option { background: white; color: #1A1A18; }
 .app-bar-dark .back-btn {
   background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); color: white;
 }
+
+/* ===== PROP THUMB — 실제 사진 오버레이 ===== */
+.prop-thumb-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(15,22,40,.08) 0%, rgba(15,22,40,.35) 100%);
+  z-index: 1;
+}
+.detail-hero-dim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(10,14,28,.2) 0%, rgba(10,14,28,.85) 100%);
+  z-index: 1;
+}
+.detail-hero-overlay { z-index: 2; }
+
+/* ===== DETAIL HERO with real photo ===== */
+.detail-hero[style*="background:url"] { background-size: cover !important; }
+
+/* ===== 6-TAB NAV ===== */
+.bottom-nav .nav-label { font-size: 8.5px; letter-spacing: .5px; }
+.bottom-nav .nav-icon  { font-size: 16px; }
+.bottom-nav .nav-item  { padding: 6px 0; }
+
+/* ===== KAKAO FAB ===== */
+.kakao-fab {
+  position: fixed;
+  bottom: 72px; right: calc(50% - 215px);
+  display: flex; align-items: center; gap: 6px;
+  background: #FEE500; color: #391B1B;
+  padding: 10px 16px; border-radius: 24px;
+  font-size: 12px; font-weight: 800; letter-spacing: .3px;
+  text-decoration: none; z-index: 300;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  transition: transform .15s, opacity .15s;
+}
+.kakao-fab:active { transform: scale(.95); opacity: .9; }
+@media (max-width: 430px) {
+  .kakao-fab { right: 16px; }
+}
+
+/* ===== LISTINGS — KAKAO BUTTON ===== */
+.kakao-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 12px;
+  background: #FEE500; color: #391B1B;
+  border-radius: var(--radius); border: none;
+  font-size: 13px; font-weight: 800; letter-spacing: .3px;
+  text-decoration: none; cursor: pointer;
+  transition: opacity .15s;
+}
+.kakao-btn:active { opacity: .85; }
+
+/* ===== CALCULATOR ===== */
+.calc-tab-bar {
+  display: flex; background: var(--navy);
+  border-bottom: 1px solid rgba(196,164,90,.15);
+}
+.calc-tab-btn {
+  flex: 1; padding: 12px 4px; border: none;
+  background: transparent; color: rgba(255,255,255,.45);
+  font-size: 11px; font-weight: 700; font-family: inherit;
+  cursor: pointer; letter-spacing: .3px;
+  border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+}
+.calc-tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.calc-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 12px; border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.calc-card-title {
+  font-size: 15px; font-weight: 700; margin-bottom: 6px; letter-spacing: -.3px;
+}
+.calc-desc {
+  font-size: 12px; color: var(--on-muted); margin-bottom: 18px; line-height: 1.6;
+}
+.calc-mode-row {
+  display: flex; gap: 6px; margin-bottom: 16px;
+}
+.calc-mode-btn {
+  flex: 1; padding: 10px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--on-muted);
+  font-size: 12px; font-weight: 600; font-family: inherit;
+  border-radius: var(--radius); cursor: pointer; transition: all .15s;
+}
+.calc-mode-btn.active {
+  background: var(--navy); color: var(--gold); border-color: var(--navy);
+}
+.calc-period-btn {
+  padding: 8px 16px; border: 1px solid var(--border);
+  background: var(--surface2); color: var(--on-muted);
+  font-size: 12px; font-weight: 600; font-family: inherit;
+  border-radius: var(--radius); cursor: pointer; transition: all .15s;
+}
+.calc-period-btn.active {
+  background: var(--navy); color: var(--gold); border-color: var(--navy);
+}
+
+.calc-result-card {
+  background: var(--navy); border-radius: var(--radius);
+  padding: 20px; margin-bottom: 12px;
+  border: 1px solid rgba(196,164,90,.25);
+}
+.calc-result-title {
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px;
+}
+.calc-result-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.calc-result-row:last-child { border-bottom: none; }
+.calc-result-big .calc-result-val {
+  font-size: 24px; font-weight: 800; color: var(--gold);
+  font-family: 'Playfair Display', serif;
+}
+.calc-result-big .calc-result-label {
+  font-size: 12px; color: var(--on-navy); font-weight: 600;
+}
+.calc-result-label { font-size: 12px; color: rgba(255,255,255,.5); }
+.calc-result-val { font-size: 14px; font-weight: 700; color: white; }
+.calc-info-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--on-muted);
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.calc-info-row:last-child { border-bottom: none; }
+
+/* ===== SAJU PROPERTY RECS ===== */
+.saju-rec-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.08);
+  cursor: pointer;
+}
+.saju-rec-card:last-of-type { border-bottom: none; }
+.saju-rec-thumb {
+  width: 52px; height: 52px; border-radius: 3px;
+  flex-shrink: 0; position: relative; overflow: hidden;
+}
+.saju-rec-score {
+  position: absolute; bottom: 3px; right: 3px;
+  font-size: 9px; font-weight: 800; color: var(--navy);
+  padding: 1px 5px; border-radius: 2px;
+}
+.saju-rec-info { flex: 1; min-width: 0; }
+.saju-rec-type  { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
+.saju-rec-title { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.saju-rec-price { font-size: 11px; color: var(--gold); margin-top: 2px; }

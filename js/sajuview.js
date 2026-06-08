@@ -177,6 +177,9 @@ function renderSajuResult() {
       <button class="btn-outline" onclick="S.sajuScreen='region';S.regionName='홍대';renderScreen()">
         📍 지역 궁합 분석하기
       </button>
+
+      <!-- 사주 맞춤 매물 추천 -->
+      ${renderSajuPropertyRecs(saju)}
     </div>
   </div>`;
 }
@@ -298,6 +301,45 @@ function renderSajuRegion() {
         <p class="info-text" style="margin-top:8px">${r.advice}</p>
       </div>
     </div>
+  </div>`;
+}
+
+/* ── 사주 맞춤 매물 추천 ── */
+function renderSajuPropertyRecs(saju) {
+  if (!saju || !window.AppData || !window.ListingView) return '';
+  const top3 = [...AppData.properties]
+    .map(p => ({ p, cs: ListingView.propCompat(p, saju) }))
+    .sort((a, b) => (b.cs || 0) - (a.cs || 0))
+    .slice(0, 3);
+
+  const cards = top3.map(({ p, cs }) => {
+    const cc = cs >= 80 ? '#C4A45A' : cs >= 65 ? '#2E7D32' : '#1565C0';
+    const imgStyle = p.img
+      ? `background:url('${p.img}') center/cover no-repeat;`
+      : `background:linear-gradient(135deg,var(--navy2),var(--navy3));`;
+    return `
+    <div class="saju-rec-card" onclick="goTab('listings');setTimeout(()=>openListingDetail(${p.id}),100)">
+      <div class="saju-rec-thumb" style="${imgStyle}">
+        <div class="saju-rec-score" style="background:${cc}">${cs}</div>
+      </div>
+      <div class="saju-rec-info">
+        <div class="saju-rec-type">${p.typeLabel} · ${p.shortAddr}</div>
+        <div class="saju-rec-title">${p.title}</div>
+        <div class="saju-rec-price">${AppData.dealLabel(p.deal)}</div>
+      </div>
+      <div style="font-size:18px;color:rgba(255,255,255,.25);align-self:center;flex-shrink:0">›</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="card" style="margin-top:12px;background:linear-gradient(135deg,var(--navy2),var(--navy));border:1px solid rgba(196,164,90,.2)">
+    <div class="section-title" style="color:var(--gold)">⭐ 사주 맞춤 추천 매물 TOP 3</div>
+    <p style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6">
+      ${Saju.EL_NAME[saju.dmEl]} 일간과 궁합이 높은 매물 순서입니다
+    </p>
+    ${cards}
+    <button class="btn-outline" style="margin-top:8px;border-color:rgba(196,164,90,.3);color:var(--gold)"
+      onclick="goTab('listings')">전체 매물 보기 →</button>
   </div>`;
 }
 

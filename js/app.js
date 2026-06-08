@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { key:'home',     icon:'⌂',  label:'홈'   },
   { key:'listings', icon:'⊞',  label:'매물'  },
   { key:'map',      icon:'◎',  label:'지도'  },
+  { key:'calc',     icon:'⊟',  label:'계산기' },
   { key:'saju',     icon:'✦',  label:'사주'  },
   { key:'my',       icon:'○',  label:'마이'  }
 ];
@@ -36,6 +37,16 @@ const NAV_ITEMS = [
 function renderShell() {
   document.getElementById('app').innerHTML = `
     <div id="screen-wrap" style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch"></div>
+
+    <!-- 카카오 상담 FAB -->
+    <a href="https://pf.kakao.com/_hawujae" target="_blank" class="kakao-fab" title="카카오 상담">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <ellipse cx="11" cy="10.5" rx="9.5" ry="8.5" fill="#3A1D1D" opacity=".1"/>
+        <path d="M11 2C6.029 2 2 5.358 2 9.5c0 2.58 1.638 4.858 4.123 6.233l-1.05 3.893c-.092.34.263.608.562.418L10.178 17c.268.034.542.05.822.05 4.971 0 9-3.358 9-7.5S15.971 2 11 2z" fill="#391B1B"/>
+      </svg>
+      카카오 상담
+    </a>
+
     <nav class="bottom-nav" id="bottom-nav">
       ${NAV_ITEMS.map(n=>`
         <button class="nav-item ${S.tab===n.key?'active':''}" onclick="goTab('${n.key}')">
@@ -64,6 +75,7 @@ function renderScreen() {
     case 'home':     wrap.innerHTML = renderHome();            break;
     case 'listings': wrap.innerHTML = renderListings();        break;
     case 'map':      wrap.innerHTML = MapView.renderScreen();  break;
+    case 'calc':     wrap.innerHTML = CalcView.render();       break;
     case 'saju':     wrap.innerHTML = renderSajuSection();     break;
     case 'my':       wrap.innerHTML = renderMy();              break;
   }
@@ -177,11 +189,11 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('map')">
           <span class="quick-icon">◎</span><span>지도</span>
         </button>
+        <button class="quick-btn" onclick="goTab('calc')">
+          <span class="quick-icon">⊟</span><span>계산기</span>
+        </button>
         <button class="quick-btn" onclick="goTab('saju')">
           <span class="quick-icon">✦</span><span>사주</span>
-        </button>
-        <button class="quick-btn" onclick="goTab('my')">
-          <span class="quick-icon">♡</span><span>관심</span>
         </button>
       </div>
 

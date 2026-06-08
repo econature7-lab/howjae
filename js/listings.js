@@ -65,10 +65,9 @@ window.ListingView = (function() {
     return `
     <div class="prop-card fade-in" onclick="ListingView.openDetail(${p.id})">
       <!-- 썸네일 영역 -->
-      <div class="prop-thumb" data-type="${p.type}">
-        <div class="prop-thumb-inner">
-          ${propEmoji(p.type)}
-        </div>
+      <div class="prop-thumb" data-type="${p.type}"${p.img ? ` style="background:url('${p.img}') center/cover no-repeat"` : ''}>
+        ${!p.img ? `<div class="prop-thumb-inner">${propEmoji(p.type)}</div>` : ''}
+        <div class="prop-thumb-overlay"></div>
         <span class="deal-badge deal-${p.deal.type}">${badge}</span>
         ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(196,164,90,.92)':'rgba(15,22,40,.82)'};color:${cs>=80?'#1A2340':'white'}">사주 ${cs}</span>` : ''}
       </div>
@@ -183,8 +182,9 @@ window.ListingView = (function() {
     return `
     <div class="detail-screen fade-in">
       <!-- 매물 헤더 이미지 영역 -->
-      <div class="detail-hero" data-type="${p.type}">
-        <span style="font-size:80px">${propEmoji(p.type)}</span>
+      <div class="detail-hero" data-type="${p.type}"${p.img ? ` style="background:url('${p.img}') center/cover no-repeat"` : ''}>
+        ${!p.img ? `<span style="font-size:80px;position:relative;z-index:1">${propEmoji(p.type)}</span>` : ''}
+        <div class="detail-hero-dim"></div>
         <div class="detail-hero-overlay">
           <span class="chip ${elCls}" style="margin-bottom:8px">${p.typeLabel}</span>
           <div style="font-size:18px;font-weight:700;line-height:1.3">${p.title}</div>
@@ -237,13 +237,17 @@ window.ListingView = (function() {
         <!-- 중개사 연락 -->
         <div class="card" style="margin-top:0">
           <div class="section-title">중개사 문의</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
             <div>
               <div style="font-weight:700;font-size:14px">${p.agent}</div>
               <div style="font-size:12px;color:var(--on-muted);margin-top:3px">${p.agentPhone}</div>
             </div>
             <a href="tel:${p.agentPhone}" class="call-btn">📞 전화</a>
           </div>
+          <a href="https://pf.kakao.com/_hawujae" target="_blank" class="kakao-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="8.5" rx="8" ry="7" fill="#3A1D1D" opacity=".12"/><path d="M9 1.5C4.858 1.5 1.5 4.134 1.5 7.38c0 2.074 1.344 3.895 3.376 4.954l-.862 3.192c-.075.278.215.497.46.343l3.726-2.47c.263.027.529.041.8.041 4.142 0 7.5-2.634 7.5-5.88S13.142 1.5 9 1.5z" fill="#371D1D"/></svg>
+            카카오톡 상담
+          </a>
         </div>
       </div>
     </div>`;

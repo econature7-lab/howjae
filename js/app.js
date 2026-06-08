@@ -113,16 +113,18 @@ function renderHome() {
   } else {
     sajuBlock = `
     <button onclick="goTab('saju')" style="width:100%;cursor:pointer;
-      background:linear-gradient(135deg,rgba(196,164,90,.18),rgba(196,164,90,.08));
-      border:1px solid rgba(196,164,90,.5);
+      background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+      border:1px solid rgba(196,164,90,.35);
+      border-left:3px solid var(--gold);
       border-radius:4px;padding:16px 18px;margin-bottom:12px;
-      display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left">
+      display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
+      box-shadow:0 4px 20px rgba(15,22,40,.15)">
       <div style="font-size:28px;flex-shrink:0">⭐</div>
-      <div>
-        <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:4px;letter-spacing:-.2px">사주 입력하고 맞춤 분석 받기</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.6)">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">사주 입력하고 맞춤 분석 받기</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">매수·매도·이사 최적 시기<br>매물 오행 궁합 분석</div>
       </div>
-      <div style="margin-left:auto;font-size:18px;color:var(--gold)">›</div>
+      <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
     </button>`;
   }
 

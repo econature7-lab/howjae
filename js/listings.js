@@ -35,10 +35,10 @@ window.ListingView = (function() {
 
   function compatBar(score) {
     if (!score) return '';
-    const c = score>=80?'#D4AF37':score>=65?'#7C5CBF':score>=50?'#2196F3':'#FF6B6B';
+    const c = score>=80?'#A8895A':score>=65?'#2E7D32':score>=50?'#1565C0':'#C62828';
     const label = score>=80?'최길':'길';
     return `<div class="prop-compat">
-      <span style="font-size:11px;color:rgba(255,255,255,.5)">사주궁합</span>
+      <span style="font-size:10px;color:var(--on-muted);letter-spacing:.5px">사주궁합</span>
       <div class="compat-bar-wrap">
         <div class="compat-bar-fill" style="width:${score}%;background:${c}"></div>
       </div>
@@ -65,12 +65,12 @@ window.ListingView = (function() {
     return `
     <div class="prop-card fade-in" onclick="ListingView.openDetail(${p.id})">
       <!-- 썸네일 영역 -->
-      <div class="prop-thumb">
-        <div class="prop-thumb-inner" data-type="${p.type}">
+      <div class="prop-thumb" data-type="${p.type}">
+        <div class="prop-thumb-inner">
           ${propEmoji(p.type)}
         </div>
         <span class="deal-badge deal-${p.deal.type}">${badge}</span>
-        ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(212,175,55,.85)':'rgba(124,92,191,.75)'}">사주 ${cs}</span>` : ''}
+        ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(168,137,90,.9)':'rgba(26,26,24,.75)'};color:white">사주 ${cs}</span>` : ''}
       </div>
       <!-- 정보 -->
       <div class="prop-info">
@@ -156,24 +156,24 @@ window.ListingView = (function() {
         : cs>=50 ? `보통 궁합입니다. 세부 조건을 꼼꼼히 검토하세요.`
         : `${pElNm}이 ${dElNm} 일간과 상극 관계입니다. 신중하게 결정하세요.`;
 
-      const scoreColor = cs>=80?'#D4AF37':cs>=65?'#7C5CBF':cs>=50?'#2196F3':'#FF6B6B';
+      const scoreColor = cs>=80?'#A8895A':cs>=65?'#2E7D32':cs>=50?'#1565C0':'#C62828';
       compatSection = `
       <div class="card">
-        <div class="section-title">⭐ 사주 궁합 분석</div>
-        <div style="text-align:center;padding:16px 0">
-          <div style="font-size:64px;font-weight:700;color:${scoreColor}">${cs}</div>
-          <div style="font-size:18px;font-weight:600;margin-top:4px;color:${scoreColor}">${gradeTxt}</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">${stars(cs)}</div>
+        <div class="section-title">✦ 사주 궁합 분석</div>
+        <div style="text-align:center;padding:14px 0">
+          <div style="font-size:60px;font-weight:700;color:${scoreColor};font-family:'Playfair Display',serif">${cs}</div>
+          <div style="font-size:16px;font-weight:700;margin-top:4px;color:${scoreColor};letter-spacing:.5px">${gradeTxt}</div>
+          <div style="font-size:14px;color:var(--gold);margin-top:6px;letter-spacing:3px">${stars(cs)}</div>
         </div>
         <div class="divider"></div>
         <p class="info-text" style="margin-top:8px">${advice}</p>
       </div>`;
     } else if (!saju) {
       compatSection = `
-      <div class="card" onclick="App.goTab('saju')" style="cursor:pointer;border:1.5px dashed rgba(212,175,55,.4)">
+      <div class="card" onclick="App.goTab('saju')" style="cursor:pointer;border:1px dashed rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
         <div style="text-align:center;padding:10px 0;color:var(--gold)">
-          ⭐ 사주를 입력하면 이 매물과의 궁합을 분석해드립니다
-          <div style="font-size:13px;margin-top:6px;color:rgba(255,255,255,.5)">→ 사주 입력하기</div>
+          ✦ 사주를 입력하면 이 매물과의 궁합을 분석해드립니다
+          <div style="font-size:12px;margin-top:6px;color:var(--on-muted);letter-spacing:.3px">→ 사주 입력하기</div>
         </div>
       </div>`;
     }
@@ -194,17 +194,17 @@ window.ListingView = (function() {
 
       <div class="content" style="padding-top:16px">
         <!-- 가격 카드 -->
-        <div class="card" style="background:linear-gradient(135deg,rgba(124,92,191,.25),rgba(26,26,46,1))">
-          <div class="section-title">💰 거래 조건</div>
-          <div style="font-size:22px;font-weight:700;color:var(--gold)">${dealTxt}</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">
+        <div class="card" style="border-left:3px solid var(--gold)">
+          <div class="section-title">거래 조건</div>
+          <div style="font-size:22px;font-weight:700;color:var(--primary);font-family:'Playfair Display',serif">${dealTxt}</div>
+          <div style="font-size:12px;color:var(--on-muted);margin-top:6px;letter-spacing:.3px">
             ${AppData.dealBadge(p.deal)} · ${p.distance?`홍대입구역 ${p.distance}m`:''}
           </div>
         </div>
 
         <!-- 기본 정보 -->
         <div class="card">
-          <div class="section-title">📋 기본 정보</div>
+          <div class="section-title">기본 정보</div>
           <div class="detail-info-grid">
             ${infoRow('전용면적',`${p.size}㎡ (${sizePy}평)`)}
             ${infoRow('층수', floorTxt)}
@@ -218,7 +218,7 @@ window.ListingView = (function() {
 
         <!-- 매물 소개 -->
         <div class="card">
-          <div class="section-title">📝 매물 소개</div>
+          <div class="section-title">매물 소개</div>
           <p class="info-text">${p.desc}</p>
           <div class="prop-tags" style="margin-top:12px">
             ${p.tags.map(t=>`<span class="prop-tag">#${t}</span>`).join('')}
@@ -236,11 +236,11 @@ window.ListingView = (function() {
 
         <!-- 중개사 연락 -->
         <div class="card" style="margin-top:0">
-          <div class="section-title">📞 중개사 문의</div>
+          <div class="section-title">중개사 문의</div>
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div>
-              <div style="font-weight:600">${p.agent}</div>
-              <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:2px">${p.agentPhone}</div>
+              <div style="font-weight:700;font-size:14px">${p.agent}</div>
+              <div style="font-size:12px;color:var(--on-muted);margin-top:3px">${p.agentPhone}</div>
             </div>
             <a href="tel:${p.agentPhone}" class="call-btn">📞 전화</a>
           </div>

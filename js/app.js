@@ -16,11 +16,11 @@ let S = {
 };
 
 const NAV_ITEMS = [
-  { key:'home',     icon:'🏠', label:'홈'   },
-  { key:'listings', icon:'🏘️', label:'매물'  },
-  { key:'map',      icon:'🗺️', label:'지도'  },
-  { key:'saju',     icon:'⭐', label:'사주'  },
-  { key:'my',       icon:'👤', label:'마이'  }
+  { key:'home',     icon:'⌂',  label:'홈'   },
+  { key:'listings', icon:'⊞',  label:'매물'  },
+  { key:'map',      icon:'◎',  label:'지도'  },
+  { key:'saju',     icon:'✦',  label:'사주'  },
+  { key:'my',       icon:'○',  label:'마이'  }
 ];
 
 /* ── 앱 껍데기 ── */
@@ -84,16 +84,16 @@ function renderHome() {
             <div class="hmsc-val" style="color:${scoreColor(s)}">${s}</div>
           </div>`).join('')}
       </div>
-      <div class="info-text" style="color:var(--gold);margin-top:8px;font-size:12px">→ 상세 분석 보기</div>
+      <div style="font-size:11px;color:var(--gold);margin-top:8px;letter-spacing:.5px">→ 상세 분석 보기</div>
     </div>`;
   } else {
     sajuBlock = `
-    <div class="home-saju-prompt card" onclick="goTab('saju')" style="cursor:pointer">
+    <div class="home-saju-prompt card" onclick="goTab('saju')" style="cursor:pointer;border:1px solid rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
       <div style="display:flex;align-items:center;gap:14px">
-        <span style="font-size:36px">⭐</span>
+        <div style="width:38px;height:38px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;flex-shrink:0">✦</div>
         <div>
-          <div style="font-weight:600;margin-bottom:4px">사주 입력하고 맞춤 분석 받기</div>
-          <div class="info-text">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
+          <div style="font-weight:700;margin-bottom:4px;font-size:14px">사주 입력하고 맞춤 분석 받기</div>
+          <div class="info-text" style="font-size:12px">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
         </div>
       </div>
     </div>`;
@@ -106,7 +106,7 @@ function renderHome() {
 
   const recCards = recs.map(p => {
     const cs = ListingView.propCompat(p, S.saju);
-    const cc = cs ? (cs>=80?'#D4AF37':cs>=65?'#7C5CBF':'#2196F3') : null;
+    const cc = cs ? scoreColor(cs) : null;
     return `
     <div class="rec-card" onclick="openListingDetail(${p.id})">
       <div class="rec-thumb">${recEmoji(p.type)}</div>
@@ -124,10 +124,10 @@ function renderHome() {
     <div class="home-header">
       <div>
         <div class="home-date">${dateStr}</div>
-        <div class="home-title">부동산사주<span style="color:var(--gold)">.</span></div>
-        <div class="home-sub">홍대 부동산 중개 &amp; AI 운세</div>
+        <div class="home-title" style="font-family:'Playfair Display',serif">부동산사주<span style="color:var(--gold);font-size:.7em">.</span></div>
+        <div class="home-sub">홍대 · 마포 프리미엄 부동산 &amp; AI 운세</div>
       </div>
-      <div class="home-logo">🏯</div>
+      <div class="home-logo">⌘</div>
     </div>
     <div style="padding:0 16px 24px">
       ${sajuBlock}
@@ -146,7 +146,7 @@ function renderHome() {
         <div class="section-title">📍 홍대 인근 부동산</div>
         <p class="info-text" style="line-height:1.8">
           마포구 홍대·연남·합정·상수동 일대. 원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold)">사주팔자 기반</span>으로 오행 방위와 시기에 맞는 매물을 추천합니다.
+          <span style="color:var(--gold);font-weight:600">사주팔자 기반</span>으로 오행 방위와 시기에 맞는 매물을 추천합니다.
         </p>
       </div>
     </div>
@@ -232,17 +232,17 @@ function renderMy() {
     </div>
     ${S.saju ? `
     <div class="card" onclick="S.sajuScreen='result';goTab('saju')" style="cursor:pointer">
-      <div class="section-title">⭐ 나의 사주</div>
-      <div style="display:flex;align-items:center;gap:12px">
-        <span style="font-size:32px">${Saju.PERSONALITY[S.saju.dmEl]?.icon||'⭐'}</span>
+      <div class="section-title">✦ 나의 사주</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:40px;height:40px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${Saju.PERSONALITY[S.saju.dmEl]?.icon||'✦'}</div>
         <div>
-          <div style="font-weight:600">${Saju.PERSONALITY[S.saju.dmEl]?.title}</div>
-          <div class="info-text">일간: ${S.saju.dayMaster} (${Saju.EL_NAME[S.saju.dmEl]}) · ${S.saju.birthYear}년생</div>
+          <div style="font-weight:700;font-size:14px">${Saju.PERSONALITY[S.saju.dmEl]?.title}</div>
+          <div class="info-text" style="margin-top:2px">일간: ${S.saju.dayMaster} (${Saju.EL_NAME[S.saju.dmEl]}) · ${S.saju.birthYear}년생</div>
         </div>
       </div>
     </div>` : `
-    <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1.5px dashed rgba(212,175,55,.4)">
-      <div style="text-align:center;color:var(--gold);padding:12px 0">⭐ 사주 입력하고 맞춤 서비스 받기 →</div>
+    <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1px dashed rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
+      <div style="text-align:center;color:var(--gold);padding:10px 0;font-size:13px;font-weight:600;letter-spacing:.3px">✦ 사주 입력하고 맞춤 서비스 받기 →</div>
     </div>`}
     <div class="section-title" style="margin-top:8px">❤️ 관심 매물 (${favProps.length})</div>
     ${favProps.length ? favProps.map(p=>`
@@ -250,11 +250,11 @@ function renderMy() {
         <span style="font-size:24px">${recEmoji(p.type)}</span>
         <div style="flex:1;min-width:0">
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.5)">${AppData.dealLabel(p.deal)}</div>
+          <div style="font-size:12px;color:var(--on-muted)">${AppData.dealLabel(p.deal)}</div>
         </div>
         <button class="fav-del" onclick="event.stopPropagation();removeFav(${p.id})">✕</button>
       </div>`).join('')
-    : `<div class="card" style="text-align:center;color:rgba(255,255,255,.3);padding:28px">
+    : `<div class="card" style="text-align:center;color:var(--on-muted);padding:28px;opacity:.7">
         관심 매물이 없습니다<br>
         <span style="font-size:12px;margin-top:4px;display:block">매물 상세에서 🤍 누르세요</span>
       </div>`}
@@ -265,7 +265,7 @@ function renderMy() {
    공통 유틸 (sajuview.js에서도 사용)
 ══════════════════════════════════════════════ */
 function scoreColor(s) {
-  return s>=80?'#D4AF37':s>=65?'#64B5F6':s>=50?'#81C784':'#FF8A65';
+  return s>=80?'#A8895A':s>=65?'#2E7D32':s>=50?'#1565C0':'#C62828';
 }
 
 function pillarCard(label, p, highlight=false) {

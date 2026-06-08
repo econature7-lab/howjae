@@ -18,8 +18,8 @@ function renderSajuSection() {
 function renderSajuWelcome() {
   return `
   <div class="welcome-wrap fade-in" style="min-height:calc(100vh - 56px)">
-    <div class="welcome-logo">⭐</div>
-    <h1 class="welcome-title">부동산 사주</h1>
+    <div class="welcome-logo">✦</div>
+    <h1 class="welcome-title" style="font-family:'Playfair Display',serif">부동산 사주</h1>
     <p class="welcome-sub">사주팔자로 분석하는<br>부동산 매수·매도·이사 최적 시기</p>
     <ul class="feature-list">
       <li class="feature-item"><div class="feature-icon">🏡</div>매수·매도·임대 운세 점수 분석</li>
@@ -28,7 +28,7 @@ function renderSajuWelcome() {
       <li class="feature-item"><div class="feature-icon">💎</div>나의 부동산 투자 성향 분석</li>
     </ul>
     <button class="btn-primary" onclick="S.sajuScreen='input';renderScreen()">
-      사주 분석 시작하기 →
+      사주 분석 시작하기
     </button>
     ${S.saju ? `<button class="btn-outline" onclick="S.sajuScreen='result';renderScreen()">이전 결과 보기</button>` : ''}
     <p class="disclaimer">본 서비스는 동양 사주 이론 기반 참고용 분석입니다.<br>실제 부동산 거래는 전문가와 상담하세요.</p>
@@ -149,13 +149,13 @@ function renderSajuResult() {
       <span class="app-bar-title">부동산 운세 결과</span>
     </div>
     <div class="content">
-      <div class="personality-banner fade-in">
-        <div class="personality-icon">${pers.icon}</div>
+      <div class="personality-banner fade-in" style="background:var(--primary)">
+        <div class="personality-icon" style="background:rgba(168,137,90,.18);width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:2px">${pers.icon}</div>
         <div><div class="personality-title">${pers.title}</div>
         <div class="personality-desc">${pers.desc}</div></div>
       </div>
       <div class="card fade-in">
-        <div class="section-title">⛩️ 사주팔자 — ${saju.inputLabel}</div>
+        <div class="section-title">사주팔자 — ${saju.inputLabel}</div>
         <div class="pillars-row">
           ${pillarCard('년주',saju.yp)} ${pillarCard('월주',saju.mp)}
           ${pillarCard('일주',saju.dp,true)}
@@ -163,9 +163,9 @@ function renderSajuResult() {
         </div>
         <div class="divider"></div>
         <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">
-          <span style="font-size:13px;color:var(--on-muted)">일간:</span>
+          <span style="font-size:11px;color:var(--on-muted);letter-spacing:.5px;text-transform:uppercase">일간</span>
           <span class="chip chip-${eClass}">${saju.dayMaster} · ${Saju.EL_NAME[saju.dmEl]}</span>
-          <span class="chip" style="background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.25);font-size:12px">${saju.yp.animal}띠</span>
+          <span class="chip" style="background:rgba(168,137,90,.1);color:var(--gold);border:1px solid rgba(168,137,90,.28);font-size:10px">${saju.yp.animal}띠</span>
         </div>
         <p class="info-text">길방 ${Saju.EL_DIR[saju.dmEl]} · 행운 숫자 ${Saju.EL_NUM[saju.dmEl]} · 행운 색상 ${Saju.EL_COLOR[saju.dmEl]}</p>
       </div>
@@ -195,12 +195,12 @@ function sajuTabContent(saju, fortune, moving) {
   switch(S.sajuTab) {
     case '개요': return `
       <div class="card fade-in">
-        <div class="section-title">📊 ${yr}년 부동산 운세 (세운: ${Saju.EL_NAME[fortune.yearEl]} 해)</div>
+        <div class="section-title">${yr}년 부동산 운세 · 세운: ${Saju.EL_NAME[fortune.yearEl]} 해</div>
         ${scoreRowEl('🏠 매수 운',fortune.buyScore)}${scoreRowEl('💰 매도 운',fortune.sellScore)}
         ${scoreRowEl('📋 임대 운',fortune.rentOutScore)}${scoreRowEl('🔑 임차 운',fortune.rentInScore)}
       </div>
       <div class="card fade-in">
-        <div class="section-title">🔮 오행 분포</div>
+        <div class="section-title">오행 분포</div>
         ${Object.entries(saju.els).map(([el,v])=>{
           const pct=Math.round(v/4.5*100);
           return `<div style="margin-bottom:10px">

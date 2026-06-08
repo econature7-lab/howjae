@@ -341,9 +341,23 @@ function scoreRowEl(label, score) {
 }
 
 /* ── 앱 시작 ── */
-window.onload = function() {
+window.onload = async function() {
   renderShell();
-  renderScreen();
+  renderScreen(); // 기본 데이터로 즉시 렌더
+
+  // Firebase 초기화 & 실시간 매물 로딩
+  try {
+    const ok = await DB.init();
+    if (ok || !DB.isConfigured()) {
+      const fireListings = await DB.getAll();
+      if (fireListings && fireListings.length) {
+        AppData.properties = fireListings;
+        renderScreen(); // Firestore 데이터로 재렌더
+      }
+    }
+  } catch (e) {
+    console.warn('[App] DB 로딩 실패, 기본 데이터 유지:', e.message);
+  }
 };
 
 window.App = { goTab, openListingDetail, backFromDetail, refreshListings, removeFav };

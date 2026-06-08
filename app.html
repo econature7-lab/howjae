@@ -12,6 +12,9 @@
   <!-- Leaflet (지도) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/style.css">
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
     .logo-img { width:40px; height:40px; object-fit:contain; }
     .logo-img-sm { width:28px; height:28px; object-fit:contain; }
@@ -21,10 +24,13 @@
 <body>
   <div id="app"></div>
 
+  <!-- Firebase 설정 & DB -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
   <!-- 사주 엔진 -->
   <script src="js/lunar.js"></script>
   <script src="js/saju.js"></script>
-  <!-- 매물 데이터 -->
+  <!-- 매물 데이터 (기본값 / 폴백) -->
   <script src="js/data.js"></script>
   <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

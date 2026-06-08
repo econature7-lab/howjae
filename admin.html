@@ -6,7 +6,23 @@
   <meta name="robots" content="noindex">
   <title>하우재 매물 관리 | Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- 매물 기본 데이터 (초기 시드용) -->
+  <script src="js/data.js"></script>
+  <!-- Firebase 설정 & DB -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/db.js"></script>
   <style>
+    .db-status {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 10px; border-radius:2px; font-size:11px; font-weight:700; letter-spacing:.5px;
+    }
+    .db-status.firestore { background:rgba(46,125,50,.12); color:#2E7D32; border:1px solid rgba(46,125,50,.25); }
+    .db-status.local     { background:rgba(191,96,0,.12);  color:#BF6000; border:1px solid rgba(191,96,0,.25); }
+    .db-status.loading   { background:rgba(196,164,90,.1); color:#8B6E2A; border:1px solid rgba(196,164,90,.2); }
+    .seed-btn { padding:6px 14px; background:rgba(196,164,90,.1); border:1px solid rgba(196,164,90,.3); color:#8B6E2A; border-radius:2px; font-size:11px; cursor:pointer; font-family:inherit; }
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --navy:  #0F1628; --navy2: #1A2340; --gold: #C4A45A;
@@ -159,7 +175,11 @@
         <div class="admin-header-sub">Property Admin</div>
       </div>
     </div>
-    <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="db-status loading" id="db-status">⏳ 연결 중...</span>
+      <button class="seed-btn" id="seed-btn" onclick="seedToFirestore()" style="display:none">☁️ Firestore 업로드</button>
+      <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+    </div>
   </header>
 
   <div class="admin-body">
@@ -342,16 +362,20 @@
 <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="handleJSONImport(event)">
 
 <script>
-/* ── 비밀번호 (실서비스 시 서버 인증으로 교체) ── */
-const ADMIN_PW = 'hawujae2026';
-
-/* ── localStorage 키 ── */
-const STORE_KEY = 'hawujae_listings';
+const ADMIN_PW   = 'hawujae2026';
 const SESSION_KEY = 'hawujae_admin_ok';
 
 let tags = [];
 let listings = [];
-let nextId = 100;
+let _nextId = 100;
+
+/* ── DB 상태 표시 ── */
+function setDbStatus(type, text) {
+  const el = document.getElementById('db-status');
+  if (!el) return;
+  el.className = 'db-status ' + type;
+  el.textContent = text;
+}
 
 /* ── 로그인 ── */
 function doLogin() {
@@ -361,7 +385,7 @@ function doLogin() {
     sessionStorage.setItem(SESSION_KEY, '1');
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-screen').classList.remove('hidden');
-    loadListings();
+    initDB();
   } else {
     err.textContent = '비밀번호가 틀렸습니다.';
     document.getElementById('pw-input').value = '';
@@ -373,32 +397,60 @@ function doLogout() {
   location.reload();
 }
 
-/* ── 초기화 ── */
+/* ── 앱 시작 ── */
 window.onload = function() {
   if (sessionStorage.getItem(SESSION_KEY)) {
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('admin-screen').classList.remove('hidden');
-    loadListings();
-  }
-  // 초기 샘플 데이터 로드 (처음 실행 시)
-  const stored = localStorage.getItem(STORE_KEY);
-  if (!stored) {
-    // data.js에서 기본 매물 복사
-    const init = window.AppData ? JSON.parse(JSON.stringify(AppData.properties)) : [];
-    localStorage.setItem(STORE_KEY, JSON.stringify(init));
-    if (init.length) nextId = Math.max(...init.map(p=>p.id)) + 1;
+    initDB();
   }
 };
 
-function loadListings() {
-  const raw = localStorage.getItem(STORE_KEY);
-  listings = raw ? JSON.parse(raw) : [];
-  if (listings.length) nextId = Math.max(...listings.map(p=>p.id)) + 1;
+/* ── DB 초기화 & 매물 로딩 ── */
+async function initDB() {
+  setDbStatus('loading', '⏳ 연결 중...');
+  try {
+    const ok = await DB.init();
+    if (ok) {
+      setDbStatus('firestore', '☁️ Firestore 연결됨');
+    } else {
+      setDbStatus('local', '💾 로컬 저장소 모드');
+      // Firestore 미설정 시 업로드 버튼 표시
+      if (!DB.isConfigured()) {
+        document.getElementById('seed-btn').style.display = 'inline-flex';
+      }
+    }
+  } catch (e) {
+    setDbStatus('local', '💾 로컬 저장소 모드');
+  }
+  await loadListings();
+}
+
+/* ── 매물 로딩 ── */
+async function loadListings() {
+  try {
+    listings = await DB.getAll() || [];
+    _nextId = listings.length ? Math.max(...listings.map(p => p.id)) + 1 : 100;
+  } catch (e) {
+    listings = [];
+  }
   renderTable();
 }
 
-function saveListing() {
-  localStorage.setItem(STORE_KEY, JSON.stringify(listings));
+/* ── Firestore에 기존 데이터 업로드 (최초 1회) ── */
+async function seedToFirestore() {
+  if (!DB.usingFirestore()) {
+    toast('❌ Firestore가 연결되지 않았습니다. firebase-config.js를 설정하세요.');
+    return;
+  }
+  if (!confirm(`${listings.length}건의 매물을 Firestore에 업로드합니다. 계속하시겠습니까?`)) return;
+  try {
+    await DB.seedFirestore(listings);
+    toast('☁️ Firestore 업로드 완료!');
+    document.getElementById('seed-btn').style.display = 'none';
+  } catch (e) {
+    toast('❌ 업로드 실패: ' + e.message);
+  }
 }
 
 /* ── 테이블 렌더 ── */
@@ -457,7 +509,7 @@ function submitListing() {
 
   const editId = parseInt(document.getElementById('edit-id').value||'0');
   const p = {
-    id: editId || nextId++,
+    id: editId || _nextId++,
     type: document.getElementById('f-type').value,
     typeLabel,
     title,
@@ -482,17 +534,22 @@ function submitListing() {
     agentPhone: document.getElementById('f-phone').value.trim()||'02-333-1234'
   };
 
-  if (editId) {
-    const idx = listings.findIndex(x=>x.id===editId);
-    if (idx>=0) listings[idx]=p;
-    toast('✅ 매물이 수정됐습니다.');
-  } else {
-    listings.push(p);
-    toast('✅ 매물이 등록됐습니다.');
+  const isEdit = !!editId;
+  try {
+    await DB.save(p);
+    if (isEdit) {
+      const idx = listings.findIndex(x=>x.id===editId);
+      if (idx>=0) listings[idx]=p; else listings.push(p);
+      toast('✅ Firestore에 수정됐습니다.');
+    } else {
+      listings.push(p);
+      toast('✅ Firestore에 등록됐습니다.');
+    }
+    renderTable();
+    resetForm();
+  } catch (e) {
+    toast('❌ 저장 실패: ' + e.message);
   }
-  saveListing();
-  renderTable();
-  resetForm();
 }
 
 function editListing(id) {
@@ -537,12 +594,16 @@ function editListing(id) {
   document.querySelector('.admin-sidebar').scrollTop = 0;
 }
 
-function deleteListing(id) {
+async function deleteListing(id) {
   if (!confirm('이 매물을 삭제하시겠습니까?')) return;
-  listings = listings.filter(x=>x.id!==id);
-  saveListing();
-  renderTable();
-  toast('🗑️ 매물이 삭제됐습니다.');
+  try {
+    await DB.remove(id);
+    listings = listings.filter(x=>x.id!==id);
+    renderTable();
+    toast('🗑️ Firestore에서 삭제됐습니다.');
+  } catch (e) {
+    toast('❌ 삭제 실패: ' + e.message);
+  }
 }
 
 function resetForm() {

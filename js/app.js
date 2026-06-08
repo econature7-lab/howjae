@@ -124,29 +124,30 @@ function renderHome() {
     <div class="home-header">
       <div>
         <div class="home-date">${dateStr}</div>
-        <div class="home-title" style="font-family:'Playfair Display',serif">부동산사주<span style="color:var(--gold);font-size:.7em">.</span></div>
-        <div class="home-sub">홍대 · 마포 프리미엄 부동산 &amp; AI 운세</div>
+        <div class="home-title" style="font-family:'Playfair Display',serif">하우재<span style="color:var(--gold);font-size:.7em">.</span></div>
+        <div class="home-sub">공인중개사사무소 · 홍대 · 마포 일대</div>
       </div>
-      <div class="home-logo">⌘</div>
+      <div class="home-logo" style="font-family:'Playfair Display',serif;font-size:15px;letter-spacing:-1px;font-weight:700">하우재</div>
     </div>
     <div style="padding:0 16px 24px">
       ${sajuBlock}
-      <div class="section-title" style="margin-top:8px">
-        ${S.saju ? '⭐ 사주 궁합 추천 매물' : '🔥 홍대 인근 인기 매물'}
+      <div class="section-title" style="margin-top:16px">
+        ${S.saju ? '사주 궁합 추천 매물' : '추천 매물'}
       </div>
       <div class="rec-list">${recCards}</div>
-      <div class="section-title" style="margin-top:8px">빠른 메뉴</div>
+      <div class="section-title" style="margin-top:16px">바로가기</div>
       <div class="quick-menu">
-        <button class="quick-btn" onclick="goTab('listings')"><span class="quick-icon">🏘️</span><span>매물 전체</span></button>
-        <button class="quick-btn" onclick="goTab('map')"><span class="quick-icon">🗺️</span><span>지도 보기</span></button>
-        <button class="quick-btn" onclick="goTab('saju')"><span class="quick-icon">⭐</span><span>사주 분석</span></button>
-        <button class="quick-btn" onclick="goTab('my')"><span class="quick-icon">❤️</span><span>관심 매물</span></button>
+        <button class="quick-btn" onclick="goTab('listings')"><span class="quick-icon">⊞</span><span>매물</span></button>
+        <button class="quick-btn" onclick="goTab('map')"><span class="quick-icon">◎</span><span>지도</span></button>
+        <button class="quick-btn" onclick="goTab('saju')"><span class="quick-icon">✦</span><span>사주</span></button>
+        <button class="quick-btn" onclick="goTab('my')"><span class="quick-icon">♡</span><span>관심</span></button>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="section-title">📍 홍대 인근 부동산</div>
-        <p class="info-text" style="line-height:1.8">
-          마포구 홍대·연남·합정·상수동 일대. 원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold);font-weight:600">사주팔자 기반</span>으로 오행 방위와 시기에 맞는 매물을 추천합니다.
+      <div class="card" style="margin-top:14px;border-left:3px solid var(--gold)">
+        <div class="section-title">하우재 공인중개사사무소</div>
+        <p class="info-text" style="line-height:1.85">
+          마포구 홍대·연남·합정·상수동 일대.<br>
+          원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
+          <span style="color:var(--gold);font-weight:600">사주팔자 오행</span> 기반으로 방위와 시기에 맞는 매물을 추천합니다.
         </p>
       </div>
     </div>
@@ -164,8 +165,8 @@ function renderListings() {
   return `
   <div style="padding:0 16px 0">
     <div class="page-header">
-      <div class="page-header-title">홍대 매물</div>
-      <div class="page-header-sub">마포구 전 유형 ${AppData.properties.length}건</div>
+      <div class="page-header-title" style="font-family:'Playfair Display',serif">매물</div>
+      <div class="page-header-sub">홍대 · 마포구 전 유형 ${AppData.properties.length}건</div>
     </div>
     ${ListingView.renderList(S.saju)}
   </div>`;
@@ -177,7 +178,7 @@ function renderDetailPage() {
   <div>
     <div class="app-bar">
       <button class="back-btn" onclick="backFromDetail()">←</button>
-      <span class="app-bar-title">매물 상세</span>
+      <span class="app-bar-title">하우재 · 매물 상세</span>
       <button class="fav-heart-btn" onclick="toggleFav(${S.detailId})" id="fav-btn">
         ${S.favorites.includes(S.detailId)?'❤️':'🤍'}
       </button>
@@ -228,11 +229,11 @@ function renderMy() {
   return `
   <div style="padding:0 16px 20px">
     <div class="page-header">
-      <div class="page-header-title">마이페이지</div>
+      <div class="page-header-title" style="font-family:'Playfair Display',serif">마이</div>
     </div>
     ${S.saju ? `
     <div class="card" onclick="S.sajuScreen='result';goTab('saju')" style="cursor:pointer">
-      <div class="section-title">✦ 나의 사주</div>
+      <div class="section-title">나의 사주</div>
       <div style="display:flex;align-items:center;gap:14px">
         <div style="width:40px;height:40px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${Saju.PERSONALITY[S.saju.dmEl]?.icon||'✦'}</div>
         <div>
@@ -244,7 +245,7 @@ function renderMy() {
     <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1px dashed rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
       <div style="text-align:center;color:var(--gold);padding:10px 0;font-size:13px;font-weight:600;letter-spacing:.3px">✦ 사주 입력하고 맞춤 서비스 받기 →</div>
     </div>`}
-    <div class="section-title" style="margin-top:8px">❤️ 관심 매물 (${favProps.length})</div>
+    <div class="section-title" style="margin-top:8px">관심 매물 (${favProps.length})</div>
     ${favProps.length ? favProps.map(p=>`
       <div class="fav-item" onclick="openListingDetail(${p.id})">
         <span style="font-size:24px">${recEmoji(p.type)}</span>

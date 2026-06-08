@@ -18,9 +18,9 @@ function renderSajuSection() {
 function renderSajuWelcome() {
   return `
   <div class="welcome-wrap fade-in" style="min-height:calc(100vh - 56px)">
-    <div class="welcome-logo">✦</div>
+    <div class="welcome-logo" style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:-1px">하우재</div>
     <h1 class="welcome-title" style="font-family:'Playfair Display',serif">부동산 사주</h1>
-    <p class="welcome-sub">사주팔자로 분석하는<br>부동산 매수·매도·이사 최적 시기</p>
+    <p class="welcome-sub">사주팔자로 분석하는<br>매수 · 매도 · 이사 최적 시기</p>
     <ul class="feature-list">
       <li class="feature-item"><div class="feature-icon">🏡</div>매수·매도·임대 운세 점수 분석</li>
       <li class="feature-item"><div class="feature-icon">📍</div>지역·매물 오행 궁합 분석</li>
@@ -146,7 +146,7 @@ function renderSajuResult() {
   <div>
     <div class="app-bar">
       <button class="back-btn" onclick="S.sajuScreen='welcome';renderScreen()">←</button>
-      <span class="app-bar-title">부동산 운세 결과</span>
+      <span class="app-bar-title">하우재 · 부동산 운세</span>
     </div>
     <div class="content">
       <div class="personality-banner fade-in" style="background:var(--primary)">

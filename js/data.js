@@ -20,7 +20,7 @@ window.AppData = {
       builtYear:2023, parking:false, elevator:true, pet:false,
       tags:['신축','풀옵션','보안강화'],
       desc:'홍대입구역 3번 출구 도보 3분. 2023년 신축. 에어컨·냉장고·세탁기 풀옵션. CCTV 완비.',
-      agent:'홍대공인중개사', agentPhone:'02-333-1234'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-333-1234'
     },
     {
       id:2, type:'oneroom', typeLabel:'원룸',
@@ -33,7 +33,7 @@ window.AppData = {
       builtYear:2019, parking:false, elevator:false, pet:true,
       tags:['반려동물','채광좋음','조용한골목'],
       desc:'연남동 핫한 카페거리 30m. 동향 채광 우수. 반려동물 가능. 조용한 주택가.',
-      agent:'연남부동산', agentPhone:'02-334-5678'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-334-5678'
     },
     {
       id:3, type:'oneroom', typeLabel:'오피스텔',
@@ -61,7 +61,7 @@ window.AppData = {
       builtYear:2018, parking:true, elevator:true, pet:false,
       tags:['30평','주차2대','리모델링'],
       desc:'홍대 메인상권 사무실. 30평 오픈플랜. 주차 2대 포함. 2022년 내부 리모델링.',
-      agent:'홍대공인중개사', agentPhone:'02-333-1234'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-333-1234'
     },
     {
       id:5, type:'office', typeLabel:'공유오피스',
@@ -74,7 +74,7 @@ window.AppData = {
       builtYear:2020, parking:false, elevator:false, pet:false,
       tags:['공유오피스','15평','카페형'],
       desc:'연남동 감성 공유오피스. 카페 인테리어. 고속인터넷·회의실 공용. 크리에이터·스타트업 최적.',
-      agent:'연남부동산', agentPhone:'02-334-5678'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-334-5678'
     },
 
     /* ── 건물 ─────────────────────────── */
@@ -89,7 +89,7 @@ window.AppData = {
       builtYear:2015, parking:true, elevator:true, pet:false,
       tags:['수익형','연4.8%','리모델링가능'],
       desc:'합정역 도보 5분. 대지 95평, 연면적 150평. 1층 상가 임대 중. 연 수익률 4.8%.',
-      agent:'합정공인중개사', agentPhone:'02-336-7890'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-336-7890'
     },
     {
       id:7, type:'building', typeLabel:'건물',
@@ -102,7 +102,7 @@ window.AppData = {
       builtYear:2011, parking:true, elevator:true, pet:false,
       tags:['핵심입지','만실','연5.2%'],
       desc:'홍대 메인거리 직접 위치. 대지 150평, 연면적 350평. 전층 만실 임대 중. 연 수익률 5.2%.',
-      agent:'홍대공인중개사', agentPhone:'02-333-1234'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-333-1234'
     },
 
     /* ── 토지 ─────────────────────────── */
@@ -117,7 +117,7 @@ window.AppData = {
       builtYear:null, parking:false, elevator:false, pet:false,
       tags:['나대지','2종일반','건폐60%'],
       desc:'동교동 나대지. 2종일반주거지역. 건폐율 60%, 용적률 200%. 즉시 건축 가능.',
-      agent:'홍대공인중개사', agentPhone:'02-333-1234'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-333-1234'
     },
     {
       id:9, type:'land', typeLabel:'토지',
@@ -130,7 +130,7 @@ window.AppData = {
       builtYear:null, parking:false, elevator:false, pet:false,
       tags:['주차장운영','개발가능','연남핵심'],
       desc:'연남동 핵심 주차장 부지. 현재 주차장 운영 중(수입 있음). 향후 개발 시 큰 시세 차익 기대.',
-      agent:'연남부동산', agentPhone:'02-334-5678'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-334-5678'
     },
 
     /* ── 건축부지 ─────────────────────── */
@@ -145,7 +145,7 @@ window.AppData = {
       builtYear:null, parking:false, elevator:false, pet:false,
       tags:['신축부지','2종일반','허가가능'],
       desc:'홍대 최적 개발부지. 200평. 2종일반주거지역. 상가+주거 복합 건축 허가 가능. 건축사 협의 완료.',
-      agent:'홍대공인중개사', agentPhone:'02-333-1234'
+      agent:'하우재 공인중개사사무소', agentPhone:'02-333-1234'
     }
   ],
 

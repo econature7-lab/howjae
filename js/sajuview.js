@@ -16,10 +16,17 @@ function renderSajuSection() {
 
 /* ── 웰컴 화면 ── */
 function renderSajuWelcome() {
+  const lg = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
+    <polygon points="40,6 72,40 40,74 8,40" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.06)"/>
+    <polygon points="40,16 60,40 40,64 20,40" stroke="#C4A45A" stroke-width="1.2" fill="rgba(196,164,90,0.10)"/>
+    <polygon points="40,26 50,40 40,54 30,40" fill="#C4A45A" opacity="0.7"/>
+    <circle cx="40" cy="40" r="4" fill="#C4A45A"/>
+  </svg>`;
   return `
   <div class="welcome-wrap fade-in" style="min-height:calc(100vh - 56px)">
-    <div class="welcome-logo" style="font-family:'Playfair Display',serif;font-size:13px;font-weight:700;letter-spacing:-1px">하우재</div>
-    <h1 class="welcome-title" style="font-family:'Playfair Display',serif">부동산 사주</h1>
+    <div class="welcome-logo">${lg}</div>
+    <div class="welcome-brand">하우재 · HAWUJAE</div>
+    <h1 class="welcome-title">부동산 사주</h1>
     <p class="welcome-sub">사주팔자로 분석하는<br>매수 · 매도 · 이사 최적 시기</p>
     <ul class="feature-list">
       <li class="feature-item"><div class="feature-icon">🏡</div>매수·매도·임대 운세 점수 분석</li>
@@ -30,7 +37,7 @@ function renderSajuWelcome() {
     <button class="btn-primary" onclick="S.sajuScreen='input';renderScreen()">
       사주 분석 시작하기
     </button>
-    ${S.saju ? `<button class="btn-outline" onclick="S.sajuScreen='result';renderScreen()">이전 결과 보기</button>` : ''}
+    ${S.saju ? `<button class="btn-outline" onclick="S.sajuScreen='result';renderScreen()" style="border-color:rgba(196,164,90,.3);color:rgba(255,255,255,.6)">이전 결과 보기</button>` : ''}
     <p class="disclaimer">본 서비스는 동양 사주 이론 기반 참고용 분석입니다.<br>실제 부동산 거래는 전문가와 상담하세요.</p>
   </div>`;
 }
@@ -149,7 +156,7 @@ function renderSajuResult() {
       <span class="app-bar-title">하우재 · 부동산 운세</span>
     </div>
     <div class="content">
-      <div class="personality-banner fade-in" style="background:var(--primary)">
+      <div class="personality-banner fade-in">
         <div class="personality-icon" style="background:rgba(168,137,90,.18);width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:2px">${pers.icon}</div>
         <div><div class="personality-title">${pers.title}</div>
         <div class="personality-desc">${pers.desc}</div></div>

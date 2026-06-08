@@ -10,8 +10,8 @@ window.MapView = (function() {
 
   /* ── 타입별 마커 색상 ── */
   const TYPE_COLOR = {
-    oneroom:'#1A1A18', office:'#1565C0',
-    building:'#A8895A', land:'#2E7D32', construction:'#BF6000'
+    oneroom:'#0F1628', office:'#1565C0',
+    building:'#C4A45A', land:'#2E7D32', construction:'#BF6000'
   };
 
   function markerSvg(color) {
@@ -46,9 +46,9 @@ window.MapView = (function() {
       attributionControl: false
     });
 
-    // CartoDB Positron Light — 건축적 화이트 지도
+    // CartoDB Dark Matter — 다크 네이비 지도
     L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
       { maxZoom: 20, subdomains:'abcd' }
     ).addTo(map);
 
@@ -73,7 +73,7 @@ window.MapView = (function() {
 
       // 툴팁
       m.bindTooltip(
-        `<div style="font-size:12px;font-weight:700;color:#1A1A18;padding:5px 10px;background:rgba(255,255,255,.97);border-radius:2px;border:1px solid #DDD8CF;letter-spacing:.2px;box-shadow:0 2px 10px rgba(0,0,0,.1)">`+
+        `<div style="font-size:12px;font-weight:700;color:#C4A45A;padding:5px 10px;background:rgba(15,22,40,.95);border-radius:2px;border:1px solid rgba(196,164,90,.3);letter-spacing:.2px;box-shadow:0 2px 10px rgba(0,0,0,.4)">`+
         `${p.typeLabel} · ${AppData.dealLabel(p.deal)}</div>`,
         { permanent:false, direction:'top', offset:[0,-44], className:'map-tip' }
       );

@@ -35,7 +35,7 @@ window.ListingView = (function() {
 
   function compatBar(score) {
     if (!score) return '';
-    const c = score>=80?'#A8895A':score>=65?'#2E7D32':score>=50?'#1565C0':'#C62828';
+    const c = score>=80?'#C4A45A':score>=65?'#2E7D32':score>=50?'#1565C0':'#C62828';
     const label = score>=80?'최길':'길';
     return `<div class="prop-compat">
       <span style="font-size:10px;color:var(--on-muted);letter-spacing:.5px">사주궁합</span>
@@ -70,7 +70,7 @@ window.ListingView = (function() {
           ${propEmoji(p.type)}
         </div>
         <span class="deal-badge deal-${p.deal.type}">${badge}</span>
-        ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(168,137,90,.9)':'rgba(26,26,24,.75)'};color:white">사주 ${cs}</span>` : ''}
+        ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(196,164,90,.92)':'rgba(15,22,40,.82)'};color:${cs>=80?'#1A2340':'white'}">사주 ${cs}</span>` : ''}
       </div>
       <!-- 정보 -->
       <div class="prop-info">
@@ -161,7 +161,7 @@ window.ListingView = (function() {
       <div class="card">
         <div class="section-title">✦ 사주 궁합 분석</div>
         <div style="text-align:center;padding:14px 0">
-          <div style="font-size:60px;font-weight:700;color:${scoreColor};font-family:'Playfair Display',serif">${cs}</div>
+          <div style="font-size:60px;font-weight:700;color:${cs>=80?'#C4A45A':scoreColor};font-family:'Playfair Display',serif">${cs}</div>
           <div style="font-size:16px;font-weight:700;margin-top:4px;color:${scoreColor};letter-spacing:.5px">${gradeTxt}</div>
           <div style="font-size:14px;color:var(--gold);margin-top:6px;letter-spacing:3px">${stars(cs)}</div>
         </div>
@@ -196,7 +196,7 @@ window.ListingView = (function() {
         <!-- 가격 카드 -->
         <div class="card" style="border-left:3px solid var(--gold)">
           <div class="section-title">거래 조건</div>
-          <div style="font-size:22px;font-weight:700;color:var(--primary);font-family:'Playfair Display',serif">${dealTxt}</div>
+          <div style="font-size:22px;font-weight:700;color:var(--navy);font-family:'Playfair Display',serif">${dealTxt}</div>
           <div style="font-size:12px;color:var(--on-muted);margin-top:6px;letter-spacing:.3px">
             ${AppData.dealBadge(p.deal)} · ${p.distance?`홍대입구역 ${p.distance}m`:''}
           </div>

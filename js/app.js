@@ -1,15 +1,29 @@
 /**
- * app.js — 부동산사주 SPA 메인 (v2 — 하단 내비 + 매물 + 사주 통합)
- * 사주 화면 렌더링 → sajuview.js 위임
+ * app.js — 하우재 부동산사주 SPA 메인
+ * 다크 네이비 + 골드 다이아몬드 테마 (Stitch 디자인)
  */
+
+/* ── 다이아몬드 SVG 로고 ── */
+const DIAMOND_SVG = `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="22,4 38,22 22,40 6,22" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.08)"/>
+  <polygon points="22,10 32,22 22,34 12,22" stroke="#C4A45A" stroke-width="1" fill="rgba(196,164,90,0.12)"/>
+  <circle cx="22" cy="22" r="2.5" fill="#C4A45A"/>
+</svg>`;
+
+const DIAMOND_SVG_LG = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="40,6 72,40 40,74 8,40" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.06)"/>
+  <polygon points="40,16 60,40 40,64 20,40" stroke="#C4A45A" stroke-width="1.2" fill="rgba(196,164,90,0.10)"/>
+  <polygon points="40,26 50,40 40,54 30,40" fill="#C4A45A" opacity="0.7"/>
+  <circle cx="40" cy="40" r="4" fill="#C4A45A"/>
+</svg>`;
 
 /* ── 전역 상태 ── */
 let S = {
-  tab: 'home',           // home | listings | map | saju | my
+  tab: 'home',
   saju: null,
   detailId: null,
   isLunar: false, isLeap: false,
-  sajuScreen: 'welcome', // welcome | input | result | region
+  sajuScreen: 'welcome',
   sajuTab: '개요',
   favorites: JSON.parse(localStorage.getItem('fav') || '[]'),
   regionName: ''
@@ -55,7 +69,7 @@ function renderScreen() {
     case 'home':     wrap.innerHTML = renderHome();            break;
     case 'listings': wrap.innerHTML = renderListings();        break;
     case 'map':      wrap.innerHTML = MapView.renderScreen();  break;
-    case 'saju':     wrap.innerHTML = renderSajuSection();     break; // sajuview.js
+    case 'saju':     wrap.innerHTML = renderSajuSection();     break;
     case 'my':       wrap.innerHTML = renderMy();              break;
   }
   wrap.scrollTop = 0;
@@ -66,35 +80,41 @@ function renderScreen() {
 ══════════════════════════════════════════════ */
 function renderHome() {
   const today = new Date();
-  const dayNames = ['일','월','화','수','목','금','토'];
-  const dateStr = `${today.getFullYear()}.${today.getMonth()+1}.${today.getDate()}(${dayNames[today.getDay()]})`;
+  const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dateStr = `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()} · ${dayNames[today.getDay()]}`;
 
   let sajuBlock = '';
   if (S.saju) {
     const rf = Saju.realEstateFortune(S.saju, today.getFullYear());
     const pers = Saju.PERSONALITY[S.saju.dmEl] || {};
     sajuBlock = `
-    <div class="home-saju-card card" onclick="goTab('saju')" style="cursor:pointer">
-      <div class="section-title">${pers.icon} 나의 부동산 사주</div>
-      <div style="font-weight:600;margin-bottom:10px">${pers.title}</div>
+    <div class="home-saju-card" onclick="goTab('saju')" style="cursor:pointer;
+      background:rgba(196,164,90,.08);border:1px solid rgba(196,164,90,.25);
+      border-radius:4px;padding:16px 18px;margin-bottom:12px">
+      <div class="section-title" style="color:var(--gold);margin-bottom:8px">나의 부동산 사주</div>
+      <div style="font-weight:600;margin-bottom:12px;color:white;font-size:14px">${pers.title}</div>
       <div class="home-score-row">
         ${[['매수',rf.buyScore],['매도',rf.sellScore],['임대',rf.rentOutScore],['임차',rf.rentInScore]].map(([l,s])=>`
           <div class="home-mini-score">
-            <div class="hmsc-label">${l}운</div>
-            <div class="hmsc-val" style="color:${scoreColor(s)}">${s}</div>
+            <div class="hmsc-label">${l}</div>
+            <div class="hmsc-val" style="color:${scoreColorDark(s)}">${s}</div>
           </div>`).join('')}
       </div>
-      <div style="font-size:11px;color:var(--gold);margin-top:8px;letter-spacing:.5px">→ 상세 분석 보기</div>
+      <div style="font-size:11px;color:var(--gold);margin-top:10px;letter-spacing:.5px">→ 상세 분석 보기</div>
     </div>`;
   } else {
     sajuBlock = `
-    <div class="home-saju-prompt card" onclick="goTab('saju')" style="cursor:pointer;border:1px solid rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:38px;height:38px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:18px;flex-shrink:0">✦</div>
-        <div>
-          <div style="font-weight:700;margin-bottom:4px;font-size:14px">사주 입력하고 맞춤 분석 받기</div>
-          <div class="info-text" style="font-size:12px">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
-        </div>
+    <div onclick="goTab('saju')" style="cursor:pointer;
+      background:rgba(196,164,90,.06);border:1px solid rgba(196,164,90,.22);
+      border-radius:4px;padding:16px 18px;margin-bottom:12px;
+      display:flex;align-items:center;gap:14px">
+      <div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+        ${DIAMOND_SVG.replace('44 44','36 36').replace('width: 44px; height: 44px;','')}
+      </div>
+      <div>
+        <div style="font-weight:700;color:white;font-size:14px;margin-bottom:4px">사주 입력하고 맞춤 분석 받기</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5)">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
       </div>
     </div>`;
   }
@@ -106,56 +126,80 @@ function renderHome() {
 
   const recCards = recs.map(p => {
     const cs = ListingView.propCompat(p, S.saju);
-    const cc = cs ? scoreColor(cs) : null;
+    const cc = cs ? scoreColorDark(cs) : null;
     return `
     <div class="rec-card" onclick="openListingDetail(${p.id})">
-      <div class="rec-thumb">${recEmoji(p.type)}</div>
+      <div class="rec-thumb" data-type="${p.type}" style="background:linear-gradient(135deg,var(--navy2),var(--navy3))"></div>
       <div class="rec-info">
         <div class="rec-type">${p.typeLabel} · ${p.shortAddr}</div>
         <div class="rec-title">${p.title}</div>
         <div class="rec-price">${AppData.dealLabel(p.deal)}</div>
-        ${cc ? `<div style="font-size:11px;color:${cc};margin-top:3px">사주궁합 ${cs}</div>` : ''}
+        ${cc ? `<div style="font-size:11px;color:${cc};margin-top:2px">궁합 ${cs}점</div>` : ''}
       </div>
+      <div style="font-size:18px;color:rgba(255,255,255,.25);align-self:center">›</div>
     </div>`;
   }).join('');
 
   return `
-  <div class="home-screen fade-in">
-    <div class="home-header">
-      <div>
-        <div class="home-date">${dateStr}</div>
-        <div class="home-title" style="font-family:'Playfair Display',serif">하우재<span style="color:var(--gold);font-size:.7em">.</span></div>
-        <div class="home-sub">공인중개사사무소 · 홍대 · 마포 일대</div>
+  <div class="fade-in" style="background:var(--bg);min-height:100%;padding-bottom:70px">
+
+    <!-- HERO HEADER -->
+    <div class="home-hero">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px">${DIAMOND_SVG.replace('44 44','32 32')}</div>
+          <span style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:700">하우재</span>
+        </div>
+        <span style="font-size:10px;color:var(--on-navy);letter-spacing:1px">${dateStr}</span>
       </div>
-      <div class="home-logo" style="font-family:'Playfair Display',serif;font-size:15px;letter-spacing:-1px;font-weight:700">하우재</div>
+      <div class="home-title">LUXURY<br>REAL ESTATE<span class="home-title-gold">.</span></div>
+      <div class="home-sub">공인중개사사무소 · 홍대 · 마포 일대</div>
+      ${S.saju ? `` : ``}
     </div>
-    <div style="padding:0 16px 24px">
+
+    <div style="padding:18px 16px 0">
+
+      <!-- 사주 배너 -->
       ${sajuBlock}
-      <div class="section-title" style="margin-top:16px">
-        ${S.saju ? '사주 궁합 추천 매물' : '추천 매물'}
+
+      <!-- 추천 매물 -->
+      <div class="section-title" style="margin-bottom:12px">
+        ${S.saju ? '⭐ 사주 궁합 추천 매물' : '추천 매물'}
       </div>
-      <div class="rec-list">${recCards}</div>
-      <div class="section-title" style="margin-top:16px">바로가기</div>
-      <div class="quick-menu">
-        <button class="quick-btn" onclick="goTab('listings')"><span class="quick-icon">⊞</span><span>매물</span></button>
-        <button class="quick-btn" onclick="goTab('map')"><span class="quick-icon">◎</span><span>지도</span></button>
-        <button class="quick-btn" onclick="goTab('saju')"><span class="quick-icon">✦</span><span>사주</span></button>
-        <button class="quick-btn" onclick="goTab('my')"><span class="quick-icon">♡</span><span>관심</span></button>
+      <div style="background:var(--surface);border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px">
+        ${recCards}
       </div>
-      <div class="card" style="margin-top:14px;border-left:3px solid var(--gold)">
-        <div class="section-title">하우재 공인중개사사무소</div>
-        <p class="info-text" style="line-height:1.85">
+
+      <!-- 빠른 메뉴 -->
+      <div class="section-title" style="margin-bottom:10px">바로가기</div>
+      <div class="quick-menu" style="margin-bottom:16px">
+        <button class="quick-btn" onclick="goTab('listings')">
+          <span class="quick-icon">⊞</span><span>매물</span>
+        </button>
+        <button class="quick-btn" onclick="goTab('map')">
+          <span class="quick-icon">◎</span><span>지도</span>
+        </button>
+        <button class="quick-btn" onclick="goTab('saju')">
+          <span class="quick-icon">✦</span><span>사주</span>
+        </button>
+        <button class="quick-btn" onclick="goTab('my')">
+          <span class="quick-icon">♡</span><span>관심</span>
+        </button>
+      </div>
+
+      <!-- 소개 -->
+      <div style="background:var(--surface);border-radius:4px;border:1px solid var(--border);
+        padding:18px;border-left:3px solid var(--gold);margin-bottom:4px">
+        <div class="section-title" style="margin-bottom:10px">하우재 공인중개사사무소</div>
+        <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
           원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold);font-weight:600">사주팔자 오행</span> 기반으로 방위와 시기에 맞는 매물을 추천합니다.
+          <span style="color:var(--gold);font-weight:600">사주팔자 오행</span> 기반으로
+          방위와 시기에 맞는 매물을 추천합니다.
         </p>
       </div>
     </div>
   </div>`;
-}
-
-function recEmoji(t) {
-  return {oneroom:'🏠',office:'🏢',building:'🏗️',land:'🌱',construction:'⚒️'}[t]||'🏠';
 }
 
 /* ══════════════════════════════════════════════
@@ -163,9 +207,9 @@ function recEmoji(t) {
 ══════════════════════════════════════════════ */
 function renderListings() {
   return `
-  <div style="padding:0 16px 0">
+  <div style="padding:0 16px;min-height:100%;background:var(--bg);padding-bottom:70px">
     <div class="page-header">
-      <div class="page-header-title" style="font-family:'Playfair Display',serif">매물</div>
+      <div class="page-header-title">매물</div>
       <div class="page-header-sub">홍대 · 마포구 전 유형 ${AppData.properties.length}건</div>
     </div>
     ${ListingView.renderList(S.saju)}
@@ -175,8 +219,8 @@ function renderListings() {
 /* ── 매물 상세 ── */
 function renderDetailPage() {
   return `
-  <div>
-    <div class="app-bar">
+  <div style="background:var(--bg);min-height:100%;padding-bottom:70px">
+    <div class="app-bar app-bar-dark">
       <button class="back-btn" onclick="backFromDetail()">←</button>
       <span class="app-bar-title">하우재 · 매물 상세</span>
       <button class="fav-heart-btn" onclick="toggleFav(${S.detailId})" id="fav-btn">
@@ -227,28 +271,28 @@ function refreshListings() {
 function renderMy() {
   const favProps = AppData.properties.filter(p => S.favorites.includes(p.id));
   return `
-  <div style="padding:0 16px 20px">
+  <div style="padding:0 16px 20px;background:var(--bg);min-height:100%;padding-bottom:70px">
     <div class="page-header">
-      <div class="page-header-title" style="font-family:'Playfair Display',serif">마이</div>
+      <div class="page-header-title">마이</div>
     </div>
     ${S.saju ? `
     <div class="card" onclick="S.sajuScreen='result';goTab('saju')" style="cursor:pointer">
-      <div class="section-title">나의 사주</div>
+      <div class="section-title" style="margin-bottom:8px">나의 사주</div>
       <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:40px;height:40px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${Saju.PERSONALITY[S.saju.dmEl]?.icon||'✦'}</div>
+        <div style="width:36px;height:36px;flex-shrink:0">${DIAMOND_SVG.replace('44 44','36 36')}</div>
         <div>
           <div style="font-weight:700;font-size:14px">${Saju.PERSONALITY[S.saju.dmEl]?.title}</div>
-          <div class="info-text" style="margin-top:2px">일간: ${S.saju.dayMaster} (${Saju.EL_NAME[S.saju.dmEl]}) · ${S.saju.birthYear}년생</div>
+          <div class="info-text" style="margin-top:2px;font-size:12px">일간: ${S.saju.dayMaster} (${Saju.EL_NAME[S.saju.dmEl]}) · ${S.saju.birthYear}년생</div>
         </div>
       </div>
     </div>` : `
-    <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1px dashed rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
+    <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1px dashed rgba(196,164,90,.4);background:rgba(196,164,90,.04)">
       <div style="text-align:center;color:var(--gold);padding:10px 0;font-size:13px;font-weight:600;letter-spacing:.3px">✦ 사주 입력하고 맞춤 서비스 받기 →</div>
     </div>`}
-    <div class="section-title" style="margin-top:8px">관심 매물 (${favProps.length})</div>
+    <div class="section-title" style="margin-top:14px">관심 매물 (${favProps.length})</div>
     ${favProps.length ? favProps.map(p=>`
       <div class="fav-item" onclick="openListingDetail(${p.id})">
-        <span style="font-size:24px">${recEmoji(p.type)}</span>
+        <span style="font-size:22px">${recEmoji(p.type)}</span>
         <div style="flex:1;min-width:0">
           <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
           <div style="font-size:12px;color:var(--on-muted)">${AppData.dealLabel(p.deal)}</div>
@@ -263,18 +307,25 @@ function renderMy() {
 }
 
 /* ══════════════════════════════════════════════
-   공통 유틸 (sajuview.js에서도 사용)
+   공통 유틸
 ══════════════════════════════════════════════ */
 function scoreColor(s) {
-  return s>=80?'#A8895A':s>=65?'#2E7D32':s>=50?'#1565C0':'#C62828';
+  return s>=80?'#C4A45A':s>=65?'#2E7D32':s>=50?'#1565C0':'#C62828';
+}
+function scoreColorDark(s) {
+  return s>=80?'#DFC07A':s>=65?'#66BB6A':s>=50?'#64B5F6':'#EF5350';
+}
+
+function recEmoji(t) {
+  return {oneroom:'🏠',office:'🏢',building:'🏗️',land:'🌱',construction:'⚒️'}[t]||'🏠';
 }
 
 function pillarCard(label, p, highlight=false) {
   const ec = Saju.EL_CLASS[p.sEl];
-  const hl = highlight ? 'border:1px solid rgba(124,92,191,.5);background:rgba(124,92,191,.12)' : '';
-  return `<div class="pillar-card" style="${hl}">
+  const hl = highlight ? 'class="pillar-card pillar-highlight"' : 'class="pillar-card"';
+  return `<div ${hl}>
     <div class="pillar-label">${label}</div>
-    <div class="pillar-stem chip-${ec}" style="display:inline-block;padding:4px 8px;border-radius:8px;margin-bottom:4px">${p.stem}(${p.sH})</div>
+    <div class="pillar-stem chip-${ec}">${p.stem}(${p.sH})</div>
     <div class="pillar-branch">${p.branch}(${p.bH})</div>
   </div>`;
 }
@@ -285,7 +336,7 @@ function scoreRowEl(label, score) {
   return `<div class="score-row">
     <span class="score-row-label">${label}</span>
     <div class="score-row-right">
-      <span class="score-stars" style="font-size:12px">${stars}</span>
+      <span class="score-stars">${stars}</span>
       <span class="score-num" style="color:${col}">${score}</span>
     </div>
   </div>`;
@@ -298,3 +349,5 @@ window.onload = function() {
 };
 
 window.App = { goTab, openListingDetail, backFromDetail, refreshListings, removeFav };
+window.DIAMOND_SVG = DIAMOND_SVG;
+window.DIAMOND_SVG_LG = DIAMOND_SVG_LG;

@@ -28,10 +28,13 @@ function renderSajuWelcome() {
       <li class="feature-item"><div class="feature-icon">📅</div>이사 길일 &amp; 길월 추천</li>
       <li class="feature-item"><div class="feature-icon">💎</div>나의 부동산 투자 성향 분석</li>
     </ul>
-    <button class="btn-primary" onclick="S.sajuScreen='input';renderScreen()">
-      사주 분석 시작하기
+    <button class="btn-saju-start" onclick="S.sajuScreen='input';renderScreen()">
+      🔮 사주 분석 시작하기
     </button>
-    ${S.saju ? `<button class="btn-outline" onclick="S.sajuScreen='result';renderScreen()" style="border-color:rgba(196,164,90,.3);color:rgba(255,255,255,.6)">이전 결과 보기</button>` : ''}
+    ${S.saju ? `
+    <button class="btn-saju-prev" onclick="S.sajuScreen='result';renderScreen()">
+      이전 결과 보기
+    </button>` : ''}
     <p class="disclaimer">본 서비스는 동양 사주 이론 기반 참고용 분석입니다.<br>실제 부동산 거래는 전문가와 상담하세요.</p>
   </div>`;
 }

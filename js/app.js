@@ -29,7 +29,7 @@ const NAV_ITEMS = [
   { key:'listings', icon:'⊞',  label:'매물'  },
   { key:'map',      icon:'◎',  label:'지도'  },
   { key:'calc',     icon:'⊟',  label:'계산기' },
-  { key:'saju',     icon:'✦',  label:'사주'  },
+  { key:'saju',     icon:'⭐', label:'사주'  },
   { key:'my',       icon:'○',  label:'마이'  }
 ];
 
@@ -112,18 +112,18 @@ function renderHome() {
     </div>`;
   } else {
     sajuBlock = `
-    <div onclick="goTab('saju')" style="cursor:pointer;
-      background:rgba(196,164,90,.06);border:1px solid rgba(196,164,90,.22);
+    <button onclick="goTab('saju')" style="width:100%;cursor:pointer;
+      background:linear-gradient(135deg,rgba(196,164,90,.18),rgba(196,164,90,.08));
+      border:1px solid rgba(196,164,90,.5);
       border-radius:4px;padding:16px 18px;margin-bottom:12px;
-      display:flex;align-items:center;gap:14px">
-      <div style="width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center">
-        ${DIAMOND_SVG.replace('44 44','36 36').replace('width: 44px; height: 44px;','')}
-      </div>
+      display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left">
+      <div style="font-size:28px;flex-shrink:0">⭐</div>
       <div>
-        <div style="font-weight:700;color:white;font-size:14px;margin-bottom:4px">사주 입력하고 맞춤 분석 받기</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.5)">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
+        <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:4px;letter-spacing:-.2px">사주 입력하고 맞춤 분석 받기</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6)">매수·매도·이사 최적 시기 · 매물 궁합 분석</div>
       </div>
-    </div>`;
+      <div style="margin-left:auto;font-size:18px;color:var(--gold)">›</div>
+    </button>`;
   }
 
   const recs = S.saju

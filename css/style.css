@@ -692,6 +692,34 @@ select.form-input option { background: white; color: #1A1A18; }
 }
 .calc-info-row:last-child { border-bottom: none; }
 
+/* ===== SAJU START BUTTON ===== */
+.btn-saju-start {
+  width: 100%; padding: 18px;
+  background: linear-gradient(135deg, #C4A45A, #DFC07A);
+  color: var(--navy);
+  border: none; border-radius: var(--radius);
+  font-size: 16px; font-weight: 900; font-family: inherit;
+  cursor: pointer; letter-spacing: 1px;
+  box-shadow: 0 6px 28px rgba(196,164,90,.55);
+  transition: transform .12s, box-shadow .12s;
+  margin-bottom: 12px;
+}
+.btn-saju-start:active { transform: scale(.97); box-shadow: 0 3px 14px rgba(196,164,90,.4); }
+
+.btn-saju-prev {
+  width: 100%; padding: 13px;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.8);
+  border: 1px solid rgba(255,255,255,.25); border-radius: var(--radius);
+  font-size: 13px; font-weight: 600; font-family: inherit;
+  cursor: pointer; margin-bottom: 12px;
+  transition: background .15s;
+}
+.btn-saju-prev:active { background: rgba(255,255,255,.18); }
+
+/* 사주 탭 강조 (⭐ 이모지 이후 추가 스타일 불필요) */
+.nav-item[data-key="saju"] .nav-icon { font-size: 18px; }
+
 /* ===== SAJU PROPERTY RECS ===== */
 .saju-rec-card {
   display: flex; align-items: center; gap: 12px;

@@ -27,22 +27,22 @@
   --water: #2196F3;
 }
 
-html, body { height: 100%; overflow: hidden; }
-
+html { height: 100%; }
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background: var(--bg);
   color: var(--on-surface);
   height: 100%;
-  max-width: 430px;
-  margin: 0 auto;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }
 
-body::-webkit-scrollbar { display: none; }
-
-#app { height: 100%; display: flex; flex-direction: column; }
+#app {
+  position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
 
 /* ===== APP-BAR ===== */
 .app-bar {

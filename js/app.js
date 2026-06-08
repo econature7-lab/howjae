@@ -3,19 +3,14 @@
  * 다크 네이비 + 골드 다이아몬드 테마 (Stitch 디자인)
  */
 
-/* ── 다이아몬드 SVG 로고 ── */
-const DIAMOND_SVG = `<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <polygon points="22,4 38,22 22,40 6,22" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.08)"/>
-  <polygon points="22,10 32,22 22,34 12,22" stroke="#C4A45A" stroke-width="1" fill="rgba(196,164,90,0.12)"/>
-  <circle cx="22" cy="22" r="2.5" fill="#C4A45A"/>
-</svg>`;
+/* ── 하우재 로고 ── */
+const LOGO_SM  = `<img src="assets/logo.png" class="logo-img-sm" alt="하우재">`;
+const LOGO_MD  = `<img src="assets/logo.png" class="logo-img" alt="하우재">`;
+const LOGO_LG  = `<img src="assets/logo.png" class="logo-img-lg" alt="하우재">`;
 
-const DIAMOND_SVG_LG = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <polygon points="40,6 72,40 40,74 8,40" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.06)"/>
-  <polygon points="40,16 60,40 40,64 20,40" stroke="#C4A45A" stroke-width="1.2" fill="rgba(196,164,90,0.10)"/>
-  <polygon points="40,26 50,40 40,54 30,40" fill="#C4A45A" opacity="0.7"/>
-  <circle cx="40" cy="40" r="4" fill="#C4A45A"/>
-</svg>`;
+/* 하위 호환 별칭 */
+const DIAMOND_SVG    = LOGO_SM;
+const DIAMOND_SVG_LG = LOGO_LG;
 
 /* ── 전역 상태 ── */
 let S = {
@@ -147,13 +142,16 @@ function renderHome() {
     <div class="home-hero">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
         <div style="display:flex;align-items:center;gap:10px">
-          <div style="width:32px;height:32px">${DIAMOND_SVG.replace('44 44','32 32')}</div>
-          <span style="font-size:11px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:700">하우재</span>
+          ${LOGO_SM}
+          <div>
+            <div style="font-size:13px;font-weight:700;color:white;letter-spacing:-.3px">하우재</div>
+            <div style="font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase">공인중개사사무소</div>
+          </div>
         </div>
         <span style="font-size:10px;color:var(--on-navy);letter-spacing:1px">${dateStr}</span>
       </div>
-      <div class="home-title">LUXURY<br>REAL ESTATE<span class="home-title-gold">.</span></div>
-      <div class="home-sub">공인중개사사무소 · 홍대 · 마포 일대</div>
+      <div class="home-title">사주팔자로 찾는<span class="home-title-gold"><br>나만의 부동산</span></div>
+      <div class="home-sub">홍대 · 연남 · 합정 · 상수 일대</div>
       ${S.saju ? `` : ``}
     </div>
 

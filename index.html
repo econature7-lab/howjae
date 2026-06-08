@@ -2,43 +2,525 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0F1628">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>하우재 공인중개사사무소 — 홍대·마포 부동산 &amp; AI 사주</title>
+  <meta name="description" content="하우재 공인중개사사무소 — 홍대·연남·합정 일대 부동산 전문. 사주팔자 오행 기반 맞춤 매물 추천.">
+  <title>하우재 공인중개사사무소 | 홍대·마포 부동산 & AI 사주</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <!-- Leaflet (지도) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --navy:   #0F1628;
+      --navy2:  #1A2340;
+      --navy3:  #253055;
+      --gold:   #C4A45A;
+      --gold2:  #DFC07A;
+      --bg:     #F7F4EF;
+      --bg2:    #F0ECE5;
+      --text:   #1A1A18;
+      --muted:  #6B6460;
+      --border: #DDD8CF;
+      --white:  #FFFFFF;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; }
+
+    /* ── 내비게이션 ── */
+    .nav {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 40px; height:68px;
+      background:rgba(15,22,40,.95); backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(196,164,90,.15);
+    }
+    .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .nav-logo img { width:36px; height:36px; object-fit:contain; }
+    .nav-logo-text { color:white; }
+    .nav-logo-text .name { font-size:15px; font-weight:700; }
+    .nav-logo-text .sub { font-size:9px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; }
+    .nav-links { display:flex; gap:28px; list-style:none; }
+    .nav-links a { color:rgba(255,255,255,.65); text-decoration:none; font-size:13px; font-weight:500; transition:color .15s; }
+    .nav-links a:hover { color:var(--gold); }
+    .nav-cta {
+      padding:8px 20px; background:var(--gold); color:var(--navy);
+      text-decoration:none; font-size:13px; font-weight:700;
+      letter-spacing:.5px; border-radius:2px; transition:opacity .15s;
+    }
+    .nav-cta:hover { opacity:.85; }
+    .nav-mobile-menu { display:none; background:transparent; border:none; cursor:pointer; color:white; font-size:22px; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background:linear-gradient(160deg, var(--navy) 0%, var(--navy2) 55%, #1A2850 100%);
+      text-align:center; padding:100px 24px 60px; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(196,164,90,.06), transparent 70%);
+      pointer-events:none;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(196,164,90,.35); border-radius:2px;
+      padding:5px 14px; margin-bottom:32px;
+      font-size:11px; color:var(--gold); letter-spacing:2px; text-transform:uppercase;
+    }
+    .hero-badge-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .hero-logo { width:120px; height:120px; object-fit:contain; margin-bottom:28px;
+      filter:drop-shadow(0 8px 32px rgba(196,164,90,.25)); }
+    .hero-title {
+      font-family:'Noto Serif KR', serif;
+      font-size:clamp(30px, 5vw, 52px); font-weight:700; color:white;
+      line-height:1.2; margin-bottom:16px; letter-spacing:-2px;
+    }
+    .hero-title-gold { color:var(--gold); }
+    .hero-sub { font-size:clamp(14px,2vw,17px); color:rgba(255,255,255,.55); margin-bottom:44px; line-height:1.75; }
+    .hero-btns { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+    .btn-primary {
+      padding:15px 32px; background:var(--gold); color:var(--navy);
+      text-decoration:none; font-size:14px; font-weight:800; border-radius:2px;
+      letter-spacing:1px; text-transform:uppercase; transition:all .15s;
+      box-shadow:0 6px 24px rgba(196,164,90,.35);
+    }
+    .btn-primary:hover { opacity:.88; transform:translateY(-1px); }
+    .btn-outline {
+      padding:15px 32px; background:transparent; color:white;
+      text-decoration:none; font-size:14px; font-weight:600; border-radius:2px;
+      border:1px solid rgba(255,255,255,.25); letter-spacing:.5px; transition:all .15s;
+    }
+    .btn-outline:hover { border-color:var(--gold); color:var(--gold); }
+    .hero-scroll { position:absolute; bottom:28px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,.25); font-size:20px; animation:scrollDown 2s infinite; }
+    @keyframes scrollDown { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+    /* ── SECTION 공통 ── */
+    section { padding:90px 24px; max-width:1100px; margin:0 auto; }
+    .section-wrap { max-width:1100px; margin:0 auto; padding:90px 24px; }
+    .section-badge {
+      display:inline-block; font-size:10px; font-weight:700; color:var(--gold);
+      letter-spacing:2.5px; text-transform:uppercase; margin-bottom:14px;
+    }
+    .section-title { font-size:clamp(22px,3vw,34px); font-weight:700; line-height:1.25; margin-bottom:14px; letter-spacing:-1px; }
+    .section-sub { font-size:15px; color:var(--muted); line-height:1.75; max-width:560px; }
+
+    /* ── 특징 3열 ── */
+    .features-bg { background:var(--white); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+    .feature-card { background:var(--white); padding:36px 32px; }
+    .feature-icon { font-size:32px; margin-bottom:16px; }
+    .feature-title { font-size:18px; font-weight:700; margin-bottom:10px; }
+    .feature-desc { font-size:14px; color:var(--muted); line-height:1.75; }
+    .feature-card:first-child { border-left:3px solid var(--gold); }
+
+    /* ── LISTINGS PREVIEW ── */
+    .listings-bg { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .listings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; margin-top:40px; }
+    .listing-card {
+      background:var(--white); border-radius:4px; overflow:hidden;
+      border:1px solid var(--border); transition:transform .2s, box-shadow .2s;
+    }
+    .listing-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(15,22,40,.1); }
+    .listing-thumb {
+      height:180px; display:flex; align-items:center; justify-content:center;
+      font-size:52px; position:relative;
+    }
+    .listing-thumb-oneroom      { background:linear-gradient(160deg,#0F1628,#253055); }
+    .listing-thumb-office       { background:linear-gradient(160deg,#0D1A2E,#1E3050); }
+    .listing-thumb-building     { background:linear-gradient(160deg,#1A1410,#3A2C20); }
+    .listing-thumb-land         { background:linear-gradient(160deg,#0D1E10,#1E3422); }
+    .listing-thumb-construction { background:linear-gradient(160deg,#1E1208,#3E2818); }
+    .listing-badge {
+      position:absolute; top:12px; left:12px;
+      padding:4px 10px; border-radius:2px; font-size:10px; font-weight:800; letter-spacing:1px;
+    }
+    .listing-badge-monthly { background:var(--navy); color:var(--gold); }
+    .listing-badge-jeonse  { background:#1565C0; color:white; }
+    .listing-badge-sale    { background:var(--gold); color:var(--navy); }
+    .listing-body { padding:18px 20px; }
+    .listing-type { font-size:10px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+    .listing-title { font-size:16px; font-weight:700; margin-bottom:4px; line-height:1.3; }
+    .listing-addr  { font-size:12px; color:var(--muted); margin-bottom:10px; }
+    .listing-price { font-size:15px; font-weight:800; color:var(--navy); margin-bottom:10px; }
+    .listing-tags  { display:flex; flex-wrap:wrap; gap:4px; }
+    .listing-tag   { font-size:11px; color:var(--muted); background:var(--bg2); border:1px solid var(--border); border-radius:2px; padding:2px 8px; }
+    .listings-cta  { text-align:center; margin-top:36px; }
+
+    /* ── 사주 소개 ── */
+    .saju-section { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; }
+    .saju-visual {
+      background:linear-gradient(160deg,var(--navy),var(--navy2));
+      border-radius:4px; padding:48px; text-align:center;
+      border:1px solid rgba(196,164,90,.15);
+    }
+    .saju-visual img { width:80px; height:80px; object-fit:contain; margin-bottom:20px; filter:drop-shadow(0 4px 16px rgba(196,164,90,.3)); }
+    .saju-steps { display:flex; flex-direction:column; gap:0; }
+    .saju-step { display:flex; gap:16px; padding:18px 0; border-bottom:1px solid var(--border); }
+    .saju-step:last-child { border-bottom:none; }
+    .saju-num {
+      width:32px; height:32px; background:var(--navy); color:var(--gold);
+      border-radius:2px; display:flex; align-items:center; justify-content:center;
+      font-size:13px; font-weight:800; flex-shrink:0;
+    }
+    .saju-step-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+    .saju-step-desc { font-size:13px; color:var(--muted); line-height:1.6; }
+
+    /* ── 통계 띠 ── */
+    .stats-bg { background:var(--navy); }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1px; background:rgba(255,255,255,.06); border:1px solid rgba(196,164,90,.12); border-radius:4px; overflow:hidden; }
+    .stat-card { background:rgba(255,255,255,.03); padding:32px 24px; text-align:center; }
+    .stat-num { font-size:36px; font-weight:700; color:var(--gold); line-height:1; margin-bottom:8px; font-family:'Noto Serif KR',serif; }
+    .stat-label { font-size:12px; color:rgba(255,255,255,.45); letter-spacing:1px; text-transform:uppercase; }
+
+    /* ── 연락처 ── */
+    .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+    .contact-info-list { display:flex; flex-direction:column; gap:0; }
+    .contact-row {
+      display:flex; align-items:flex-start; gap:14px; padding:16px 0;
+      border-bottom:1px solid var(--border);
+    }
+    .contact-row:last-child { border-bottom:none; }
+    .contact-icon { font-size:18px; flex-shrink:0; margin-top:2px; }
+    .contact-label { font-size:10px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+    .contact-value { font-size:15px; font-weight:600; }
+    .contact-map-placeholder {
+      background:var(--navy2); border-radius:4px; height:280px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      border:1px solid rgba(196,164,90,.15); color:rgba(255,255,255,.4); gap:10px;
+    }
+
+    /* ── FOOTER ── */
+    .footer { background:var(--navy); border-top:1px solid rgba(196,164,90,.12); padding:40px 40px 28px; }
+    .footer-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:28px; }
+    .footer-brand { display:flex; align-items:center; gap:12px; }
+    .footer-brand img { width:36px; height:36px; object-fit:contain; }
+    .footer-brand-text .name { font-size:14px; font-weight:700; color:white; }
+    .footer-brand-text .sub { font-size:10px; color:var(--gold); letter-spacing:1.5px; }
+    .footer-info { font-size:12px; color:rgba(255,255,255,.3); line-height:2; margin-top:10px; }
+    .footer-links { display:flex; gap:20px; list-style:none; }
+    .footer-links a { font-size:12px; color:rgba(255,255,255,.4); text-decoration:none; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-bottom { max-width:1100px; margin:28px auto 0; padding-top:20px; border-top:1px solid rgba(255,255,255,.06); font-size:11px; color:rgba(255,255,255,.2); }
+
+    /* ── 모바일 반응형 ── */
+    @media (max-width:768px) {
+      .nav { padding:0 20px; }
+      .nav-links, .nav-cta { display:none; }
+      .nav-mobile-menu { display:block; }
+      .hero { padding:80px 20px 48px; }
+      .hero-logo { width:88px; height:88px; }
+      .section-wrap { padding:60px 20px; }
+      section { padding:60px 20px; }
+      .saju-section { grid-template-columns:1fr; gap:32px; }
+      .contact-grid { grid-template-columns:1fr; gap:32px; }
+      .footer-inner { flex-direction:column; }
+      .footer { padding:32px 20px 24px; }
+      .stats-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
 
-  <!-- 사주 엔진 -->
-  <script src="js/lunar.js"></script>
-  <script src="js/saju.js"></script>
-  <!-- 매물 데이터 -->
-  <script src="js/data.js"></script>
-  <!-- Leaflet -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- 지도 뷰 -->
-  <script src="js/map.js"></script>
-  <!-- 매물 뷰 -->
-  <script src="js/listings.js"></script>
-  <!-- 사주 화면 뷰 -->
-  <script src="js/sajuview.js"></script>
-  <!-- 앱 메인 -->
-  <script src="js/app.js"></script>
+<!-- ══ 내비게이션 ══ -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/logo.png" alt="하우재">
+    <div class="nav-logo-text">
+      <div class="name">하우재</div>
+      <div class="sub">공인중개사사무소</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">서비스</a></li>
+    <li><a href="#listings">매물</a></li>
+    <li><a href="#saju">사주 분석</a></li>
+    <li><a href="#contact">연락처</a></li>
+  </ul>
+  <a href="app.html" class="nav-cta">앱으로 보기 →</a>
+  <button class="nav-mobile-menu" onclick="document.location='app.html'">☰</button>
+</nav>
 
-  <!--
-  ══ 네이버 지도 연동 방법 ══
-  1. https://www.ncloud.com/ → AI·NAVER API → Maps 서비스 신청
-  2. Client ID 발급 후 아래 주석 해제:
-  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
-  3. js/map.js 하단 주석 참고하여 init() 함수를 네이버 방식으로 교체
-  ══════════════════════════
-  -->
+<!-- ══ HERO ══ -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    홍대 · 연남 · 합정 · 상수 전문 중개
+  </div>
+  <img src="assets/logo.png" class="hero-logo" alt="하우재">
+  <h1 class="hero-title">
+    사주팔자로 찾는<br>
+    <span class="hero-title-gold">나만의 부동산</span>
+  </h1>
+  <p class="hero-sub">
+    동양 오행 철학과 현대 부동산 전문성의 만남<br>
+    당신의 일간 오행에 맞는 방위와 시기를 분석합니다
+  </p>
+  <div class="hero-btns">
+    <a href="app.html" class="btn-primary">매물 보기 & 사주 분석</a>
+    <a href="#features" class="btn-outline">서비스 알아보기</a>
+  </div>
+  <div class="hero-scroll">↓</div>
+</div>
+
+<!-- ══ 특징 ══ -->
+<div class="features-bg" id="features">
+  <div class="section-wrap">
+    <div class="section-badge">WHY HAWUJAE</div>
+    <h2 class="section-title">하우재가 다른 이유</h2>
+    <p class="section-sub" style="margin-bottom:40px">단순한 부동산 중개를 넘어, 당신의 사주와 오행에 맞는 매물을 추천합니다.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">✦</div>
+        <div class="feature-title">AI 사주 궁합 분석</div>
+        <div class="feature-desc">생년월일을 입력하면 일간 오행을 분석합니다. 매물의 오행·방위와 상생/상극 관계를 점수로 표시해 최적의 매물을 추천합니다.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏡</div>
+        <div class="feature-title">홍대·마포 전문</div>
+        <div class="feature-desc">홍대입구·연남동·합정·상수동 일대 원룸·오피스텔·사무실·건물·토지까지 전 유형을 직접 거래합니다. 현장 10년 이상 경험.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">이사 길일·길월 추천</div>
+        <div class="feature-desc">손없는날 계산과 일간별 행운 월을 분석해 계약·이사에 가장 좋은 날을 추천합니다. 매수·매도 운세 점수도 제공합니다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 매물 미리보기 ══ -->
+<div class="listings-bg" id="listings">
+  <div class="section-wrap">
+    <div class="section-badge">CURRENT LISTINGS</div>
+    <h2 class="section-title">최신 매물</h2>
+    <p class="section-sub">홍대·마포구 전 유형 매물을 실시간으로 확인하세요.</p>
+    <div class="listings-grid">
+      <!-- 매물 1 -->
+      <div class="listing-card">
+        <div class="listing-thumb listing-thumb-oneroom">
+          <span>🏠</span>
+          <span class="listing-badge listing-badge-monthly">월세</span>
+        </div>
+        <div class="listing-body">
+          <div class="listing-type">원룸 · 서교동</div>
+          <div class="listing-title">홍대입구역 3분 신축 원룸</div>
+          <div class="listing-addr">서울시 마포구 서교동 355-8 · 전용 19.8㎡</div>
+          <div class="listing-price">보증금 1,000만 / 월 65만</div>
+          <div class="listing-tags">
+            <span class="listing-tag">#신축</span>
+            <span class="listing-tag">#풀옵션</span>
+            <span class="listing-tag">#보안강화</span>
+          </div>
+        </div>
+      </div>
+      <!-- 매물 2 -->
+      <div class="listing-card">
+        <div class="listing-thumb listing-thumb-building">
+          <span>🏗️</span>
+          <span class="listing-badge listing-badge-sale">매매</span>
+        </div>
+        <div class="listing-body">
+          <div class="listing-type">건물 · 합정동</div>
+          <div class="listing-title">합정역 꼬마빌딩 5층 (연 수익률 4.8%)</div>
+          <div class="listing-addr">서울시 마포구 합정동 383-12 · 연면적 495㎡</div>
+          <div class="listing-price">매매 32억</div>
+          <div class="listing-tags">
+            <span class="listing-tag">#수익형</span>
+            <span class="listing-tag">#연4.8%</span>
+            <span class="listing-tag">#리모델링가능</span>
+          </div>
+        </div>
+      </div>
+      <!-- 매물 3 -->
+      <div class="listing-card">
+        <div class="listing-thumb listing-thumb-office">
+          <span>🏢</span>
+          <span class="listing-badge listing-badge-monthly">월세</span>
+        </div>
+        <div class="listing-body">
+          <div class="listing-type">사무실 · 서교동</div>
+          <div class="listing-title">서교동 메인 30평 사무실</div>
+          <div class="listing-addr">서울시 마포구 서교동 400-1 3층 · 전용 99.2㎡</div>
+          <div class="listing-price">보증금 5,000만 / 월 220만</div>
+          <div class="listing-tags">
+            <span class="listing-tag">#30평</span>
+            <span class="listing-tag">#주차2대</span>
+            <span class="listing-tag">#리모델링</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="listings-cta">
+      <a href="app.html" class="btn-primary">전체 매물 보기</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 사주 분석 소개 ══ -->
+<div style="background:var(--bg)" id="saju">
+  <div class="section-wrap">
+    <div class="saju-section">
+      <div>
+        <div class="section-badge">HOW IT WORKS</div>
+        <h2 class="section-title">사주 부동산 분석<br>어떻게 작동하나요?</h2>
+        <p class="section-sub" style="margin-bottom:32px">수천 년의 동양 철학을 현대 부동산에 접목했습니다.</p>
+        <div class="saju-steps">
+          <div class="saju-step">
+            <div class="saju-num">01</div>
+            <div>
+              <div class="saju-step-title">생년월일 입력</div>
+              <div class="saju-step-desc">생년월일(양력/음력)을 입력하면 사주팔자를 자동 계산합니다. 일간 오행(木火土金水)을 파악합니다.</div>
+            </div>
+          </div>
+          <div class="saju-step">
+            <div class="saju-num">02</div>
+            <div>
+              <div class="saju-step-title">매물 오행 분석</div>
+              <div class="saju-step-desc">각 매물의 위치·방향·지역 오행을 분석합니다. 일간과의 상생/상극 관계로 궁합 점수(0~100)를 산출합니다.</div>
+            </div>
+          </div>
+          <div class="saju-step">
+            <div class="saju-num">03</div>
+            <div>
+              <div class="saju-step-title">맞춤 매물 추천</div>
+              <div class="saju-step-desc">궁합 점수가 높은 순서로 매물을 정렬합니다. 매수·매도·이사 최적 시기와 길일도 함께 안내합니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="saju-visual">
+        <img src="assets/logo.png" alt="하우재">
+        <div style="color:white;font-size:18px;font-weight:700;margin-bottom:8px">하우재 사주 분석</div>
+        <div style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.75;margin-bottom:24px">
+          목(木) · 화(火) · 토(土)<br>금(金) · 수(水) 오행 기반
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(196,164,90,.15);border:1px solid rgba(196,164,90,.15);border-radius:2px;overflow:hidden">
+          <div style="background:rgba(255,255,255,.04);padding:14px;text-align:center">
+            <div style="color:var(--gold);font-size:20px;font-weight:700">매수운</div>
+            <div style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px">BUY SCORE</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);padding:14px;text-align:center">
+            <div style="color:var(--gold);font-size:20px;font-weight:700">매도운</div>
+            <div style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px">SELL SCORE</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);padding:14px;text-align:center">
+            <div style="color:var(--gold);font-size:20px;font-weight:700">임대운</div>
+            <div style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px">RENT OUT</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);padding:14px;text-align:center">
+            <div style="color:var(--gold);font-size:20px;font-weight:700">이사운</div>
+            <div style="color:rgba(255,255,255,.4);font-size:11px;margin-top:2px">MOVING</div>
+          </div>
+        </div>
+        <a href="app.html" style="display:block;margin-top:20px;padding:13px;background:var(--gold);color:var(--navy);text-decoration:none;font-size:13px;font-weight:800;letter-spacing:1px;border-radius:2px;text-transform:uppercase">
+          사주 분석 시작하기 →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 통계 띠 ══ -->
+<div class="stats-bg">
+  <div class="section-wrap" style="padding:60px 24px">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">10+</div>
+        <div class="stat-label">Years in Mapo</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">300+</div>
+        <div class="stat-label">Deals Closed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Property Types</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">AI</div>
+        <div class="stat-label">Saju Analysis</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 연락처 ══ -->
+<div style="background:var(--bg)" id="contact">
+  <div class="section-wrap">
+    <div class="section-badge">CONTACT</div>
+    <h2 class="section-title" style="margin-bottom:40px">연락처 & 오시는 길</h2>
+    <div class="contact-grid">
+      <div class="contact-info-list">
+        <div class="contact-row">
+          <span class="contact-icon">📍</span>
+          <div>
+            <div class="contact-label">주소</div>
+            <div class="contact-value">서울시 마포구 홍대입구 인근</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📞</span>
+          <div>
+            <div class="contact-label">전화</div>
+            <div class="contact-value">02-333-1234</div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">🕐</span>
+          <div>
+            <div class="contact-label">운영시간</div>
+            <div class="contact-value">평일 09:00 – 18:00<br><span style="font-size:13px;color:var(--muted)">토요일 10:00 – 15:00 / 일요일 휴무</span></div>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">✉️</span>
+          <div>
+            <div class="contact-label">이메일</div>
+            <div class="contact-value">hawujae@email.com</div>
+          </div>
+        </div>
+        <div style="margin-top:24px">
+          <a href="app.html" class="btn-primary" style="display:inline-block;margin-right:12px">앱으로 매물 보기</a>
+        </div>
+      </div>
+      <div class="contact-map-placeholder">
+        <span style="font-size:36px">🗺️</span>
+        <div>홍대입구역 인근</div>
+        <div style="font-size:12px">지도 연동 예정</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 푸터 ══ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="하우재">
+        <div class="footer-brand-text">
+          <div class="name">하우재 공인중개사사무소</div>
+          <div class="sub">HAWUJAE REAL ESTATE</div>
+        </div>
+      </div>
+      <div class="footer-info">
+        서울특별시 마포구 · 대표: 홍길동 · 등록번호: 00000-0000<br>
+        사업자등록번호: 000-00-00000 · Tel: 02-333-1234
+      </div>
+    </div>
+    <ul class="footer-links">
+      <li><a href="#features">서비스 소개</a></li>
+      <li><a href="#listings">매물 목록</a></li>
+      <li><a href="#saju">사주 분석</a></li>
+      <li><a href="app.html">앱 바로가기</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    © 2026 하우재 공인중개사사무소. All rights reserved. · 본 사주 서비스는 참고용입니다.
+  </div>
+</footer>
+
 </body>
 </html>

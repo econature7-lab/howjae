@@ -16,15 +16,9 @@ function renderSajuSection() {
 
 /* ── 웰컴 화면 ── */
 function renderSajuWelcome() {
-  const lg = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px">
-    <polygon points="40,6 72,40 40,74 8,40" stroke="#C4A45A" stroke-width="1.5" fill="rgba(196,164,90,0.06)"/>
-    <polygon points="40,16 60,40 40,64 20,40" stroke="#C4A45A" stroke-width="1.2" fill="rgba(196,164,90,0.10)"/>
-    <polygon points="40,26 50,40 40,54 30,40" fill="#C4A45A" opacity="0.7"/>
-    <circle cx="40" cy="40" r="4" fill="#C4A45A"/>
-  </svg>`;
   return `
   <div class="welcome-wrap fade-in" style="min-height:calc(100vh - 56px)">
-    <div class="welcome-logo">${lg}</div>
+    <div class="welcome-logo"><img src="assets/logo.png" style="width:90px;height:90px;object-fit:contain" alt="하우재"></div>
     <div class="welcome-brand">하우재 · HAWUJAE</div>
     <h1 class="welcome-title">부동산 사주</h1>
     <p class="welcome-sub">사주팔자로 분석하는<br>매수 · 매도 · 이사 최적 시기</p>

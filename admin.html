@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>하우재 매물 관리 | Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --navy:  #0F1628; --navy2: #1A2340; --gold: #C4A45A;
+      --bg:    #F7F4EF; --surface:#FFFFFF; --surface2:#F0ECE5;
+      --text:  #1A1A18; --muted: #6B6460;
+      --border:#DDD8CF; --border2:#C4BAB0;
+      --error: #C62828; --success:#2E7D32;
+      --radius:3px;
+    }
+    body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); }
+
+    /* ── 로그인 ── */
+    #login-screen {
+      position:fixed; inset:0; background:var(--navy);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:999;
+    }
+    .login-box {
+      background:var(--navy2); border:1px solid rgba(196,164,90,.2);
+      border-radius:4px; padding:40px; width:360px; max-width:90vw; text-align:center;
+    }
+    .login-logo { width:64px; height:64px; object-fit:contain; margin-bottom:16px; }
+    .login-title { color:white; font-size:18px; font-weight:700; margin-bottom:4px; }
+    .login-sub   { color:var(--gold); font-size:11px; letter-spacing:2px; text-transform:uppercase; margin-bottom:28px; }
+    .login-input {
+      width:100%; padding:12px 14px; background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12); border-radius:var(--radius);
+      color:white; font-size:15px; font-family:inherit; margin-bottom:12px;
+      outline:none;
+    }
+    .login-input:focus { border-color:var(--gold); }
+    .login-btn {
+      width:100%; padding:13px; background:var(--gold); color:var(--navy);
+      border:none; border-radius:var(--radius); font-size:14px; font-weight:800;
+      font-family:inherit; cursor:pointer; letter-spacing:1px; text-transform:uppercase;
+    }
+    .login-btn:active { opacity:.85; }
+    .login-err { color:#EF5350; font-size:12px; margin-top:8px; min-height:18px; }
+
+    /* ── 헤더 ── */
+    .admin-header {
+      background:var(--navy); border-bottom:1px solid rgba(196,164,90,.15);
+      padding:0 28px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100;
+    }
+    .admin-header-left { display:flex; align-items:center; gap:12px; }
+    .admin-header-left img { width:32px; height:32px; object-fit:contain; }
+    .admin-header-title { color:white; font-size:14px; font-weight:700; }
+    .admin-header-sub { color:var(--gold); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; }
+    .logout-btn {
+      padding:6px 14px; border:1px solid rgba(255,255,255,.2);
+      background:transparent; color:rgba(255,255,255,.5); border-radius:var(--radius);
+      font-size:11px; cursor:pointer; font-family:inherit;
+    }
+
+    /* ── 레이아웃 ── */
+    .admin-body { display:grid; grid-template-columns:320px 1fr; min-height:calc(100vh - 60px); }
+    .admin-sidebar { background:var(--surface); border-right:1px solid var(--border); padding:24px; overflow-y:auto; }
+    .admin-main { padding:28px; overflow-y:auto; }
+
+    /* ── 폼 ── */
+    .panel-title { font-size:13px; font-weight:700; margin-bottom:16px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); }
+    .form-group { margin-bottom:14px; }
+    .form-label { display:block; font-size:10px; font-weight:700; color:var(--muted); margin-bottom:5px; letter-spacing:1.5px; text-transform:uppercase; }
+    .form-input, .form-select, .form-textarea {
+      width:100%; padding:10px 12px; background:var(--surface2); border:1px solid var(--border);
+      border-radius:var(--radius); color:var(--text); font-size:14px; font-family:inherit;
+      outline:none; transition:border-color .15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--gold); background:white; }
+    .form-textarea { resize:vertical; min-height:80px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .form-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+    .checkbox-group { display:flex; gap:16px; flex-wrap:wrap; }
+    .checkbox-item { display:flex; align-items:center; gap:6px; font-size:13px; cursor:pointer; }
+    .checkbox-item input { accent-color:var(--gold); cursor:pointer; }
+
+    .tags-input { display:flex; flex-wrap:wrap; gap:4px; align-items:center; min-height:38px;
+      padding:6px 8px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius); }
+    .tag-chip { background:var(--navy); color:var(--gold); padding:2px 8px; border-radius:2px; font-size:12px; display:flex; align-items:center; gap:4px; }
+    .tag-chip button { background:none; border:none; color:var(--gold); cursor:pointer; font-size:11px; padding:0; }
+    .tags-input-field { border:none; background:transparent; font-size:13px; color:var(--text); font-family:inherit; outline:none; min-width:80px; }
+
+    .submit-btn {
+      width:100%; padding:13px; background:var(--gold); color:var(--navy);
+      border:none; border-radius:var(--radius); font-size:13px; font-weight:800;
+      font-family:inherit; cursor:pointer; letter-spacing:1px; text-transform:uppercase; margin-top:8px;
+    }
+    .submit-btn:active { opacity:.85; }
+    .reset-btn {
+      width:100%; padding:11px; background:transparent; color:var(--muted);
+      border:1px solid var(--border); border-radius:var(--radius); font-size:12px;
+      font-family:inherit; cursor:pointer; margin-top:6px;
+    }
+
+    /* ── 매물 목록 ── */
+    .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+    .toolbar-title { font-size:18px; font-weight:700; }
+    .toolbar-count { font-size:12px; color:var(--muted); }
+    .listing-table { border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+    .table-header { display:grid; grid-template-columns:40px 2fr 1fr 1fr 1fr 90px; background:var(--navy); color:var(--gold); font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:10px 16px; }
+    .table-row { display:grid; grid-template-columns:40px 2fr 1fr 1fr 1fr 90px; align-items:center; padding:12px 16px; background:var(--surface); border-bottom:1px solid var(--border); transition:background .1s; }
+    .table-row:last-child { border-bottom:none; }
+    .table-row:hover { background:var(--surface2); }
+    .table-id { font-size:12px; color:var(--muted); }
+    .table-title { font-size:13px; font-weight:600; }
+    .table-sub   { font-size:11px; color:var(--muted); margin-top:2px; }
+    .table-cell  { font-size:12px; color:var(--muted); }
+    .badge { display:inline-block; padding:2px 7px; border-radius:2px; font-size:10px; font-weight:700; letter-spacing:.5px; }
+    .badge-monthly { background:rgba(15,22,40,.1); color:var(--navy); }
+    .badge-jeonse  { background:rgba(21,101,192,.1); color:#1565C0; }
+    .badge-sale    { background:rgba(196,164,90,.15); color:#8B6E2A; }
+    .action-btns { display:flex; gap:6px; }
+    .edit-btn { padding:5px 10px; background:var(--surface2); border:1px solid var(--border); border-radius:2px; font-size:11px; cursor:pointer; font-family:inherit; }
+    .del-btn  { padding:5px 10px; background:rgba(198,40,40,.07); border:1px solid rgba(198,40,40,.2); color:var(--error); border-radius:2px; font-size:11px; cursor:pointer; font-family:inherit; }
+    .empty-state { text-align:center; padding:48px; color:var(--muted); font-size:14px; background:var(--surface); }
+
+    /* ── 토스트 ── */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); background:var(--navy); color:white; padding:10px 20px; border-radius:var(--radius); font-size:13px; border:1px solid rgba(196,164,90,.3); z-index:9999; opacity:0; transition:opacity .3s; pointer-events:none; }
+    #toast.show { opacity:1; }
+
+    .hidden { display:none !important; }
+
+    @media (max-width:900px) {
+      .admin-body { grid-template-columns:1fr; }
+      .admin-sidebar { border-right:none; border-bottom:1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── 로그인 화면 ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="assets/logo.png" class="login-logo" alt="하우재">
+    <div class="login-title">하우재 관리자</div>
+    <div class="login-sub">Admin Portal</div>
+    <input type="password" class="login-input" id="pw-input" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ── 어드민 ── -->
+<div id="admin-screen" class="hidden">
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <img src="assets/logo.png" alt="하우재">
+      <div>
+        <div class="admin-header-title">하우재 매물 관리</div>
+        <div class="admin-header-sub">Property Admin</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+  </header>
+
+  <div class="admin-body">
+    <!-- 사이드바: 등록 폼 -->
+    <aside class="admin-sidebar">
+      <div class="panel-title" id="form-mode-title">신규 매물 등록</div>
+      <input type="hidden" id="edit-id">
+
+      <div class="form-group">
+        <label class="form-label">매물 유형 *</label>
+        <select class="form-select" id="f-type">
+          <option value="oneroom">원룸</option>
+          <option value="office">오피스 / 사무실</option>
+          <option value="building">건물</option>
+          <option value="land">토지</option>
+          <option value="construction">건축부지</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">매물명 *</label>
+        <input class="form-input" id="f-title" placeholder="예: 홍대입구역 3분 신축 원룸">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">단축주소 *</label>
+          <input class="form-input" id="f-short-addr" placeholder="서교동">
+        </div>
+        <div class="form-group">
+          <label class="form-label">오행 *</label>
+          <select class="form-select" id="f-element">
+            <option value="wood">목(木)</option>
+            <option value="fire">화(火)</option>
+            <option value="earth">토(土)</option>
+            <option value="metal">금(金)</option>
+            <option value="water">수(水)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">전체 주소 *</label>
+        <input class="form-input" id="f-full-addr" placeholder="서울시 마포구 서교동 000-0">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">거래 유형 *</label>
+        <select class="form-select" id="f-deal-type" onchange="updateDealFields()">
+          <option value="monthly">월세</option>
+          <option value="jeonse">전세</option>
+          <option value="sale">매매</option>
+        </select>
+      </div>
+      <div id="deal-monthly" class="form-row">
+        <div class="form-group">
+          <label class="form-label">보증금(만원)</label>
+          <input class="form-input" id="f-deposit" type="number" placeholder="1000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">월세(만원)</label>
+          <input class="form-input" id="f-monthly" type="number" placeholder="65">
+        </div>
+      </div>
+      <div id="deal-jeonse" class="form-group hidden">
+        <label class="form-label">전세가(만원)</label>
+        <input class="form-input" id="f-jeonse" type="number" placeholder="14000">
+      </div>
+      <div id="deal-sale" class="form-group hidden">
+        <label class="form-label">매매가(만원)</label>
+        <input class="form-input" id="f-price" type="number" placeholder="320000">
+      </div>
+
+      <div class="form-row3">
+        <div class="form-group">
+          <label class="form-label">전용㎡</label>
+          <input class="form-input" id="f-size" type="number" placeholder="19.8">
+        </div>
+        <div class="form-group">
+          <label class="form-label">층수</label>
+          <input class="form-input" id="f-floor" type="number" placeholder="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">최고층</label>
+          <input class="form-input" id="f-total-floor" type="number" placeholder="5">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">방향</label>
+          <select class="form-select" id="f-direction">
+            <option value="">-</option>
+            <option value="S">남향</option><option value="N">북향</option>
+            <option value="E">동향</option><option value="W">서향</option>
+            <option value="SE">남동향</option><option value="SW">남서향</option>
+            <option value="NE">북동향</option><option value="NW">북서향</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">역까지(m)</label>
+          <input class="form-input" id="f-distance" type="number" placeholder="200">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">위도(lat)</label>
+          <input class="form-input" id="f-lat" type="number" step="0.0001" placeholder="37.5562">
+        </div>
+        <div class="form-group">
+          <label class="form-label">경도(lng)</label>
+          <input class="form-input" id="f-lng" type="number" step="0.0001" placeholder="126.9236">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">옵션</label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" id="f-parking"> 주차</label>
+          <label class="checkbox-item"><input type="checkbox" id="f-elevator"> 엘리베이터</label>
+          <label class="checkbox-item"><input type="checkbox" id="f-pet"> 반려동물</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">준공연도</label>
+        <input class="form-input" id="f-built" type="number" placeholder="2023">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">태그 (엔터로 추가)</label>
+        <div class="tags-input" id="tags-wrap">
+          <input class="tags-input-field" id="tag-input" placeholder="신축, 풀옵션..." onkeydown="handleTagKey(event)">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">매물 소개</label>
+        <textarea class="form-textarea" id="f-desc" placeholder="매물 설명을 입력하세요..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">담당자</label>
+        <input class="form-input" id="f-agent" value="하우재 공인중개사사무소">
+      </div>
+      <div class="form-group">
+        <label class="form-label">연락처</label>
+        <input class="form-input" id="f-phone" value="02-333-1234">
+      </div>
+
+      <button class="submit-btn" id="submit-btn" onclick="submitListing()">✚ 매물 등록</button>
+      <button class="reset-btn" onclick="resetForm()">초기화</button>
+    </aside>
+
+    <!-- 메인: 목록 -->
+    <main class="admin-main">
+      <div class="toolbar">
+        <div>
+          <div class="toolbar-title">등록 매물 목록</div>
+          <div class="toolbar-count" id="listing-count"></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button onclick="exportJSON()" style="padding:8px 16px;background:var(--navy);color:var(--gold);border:1px solid rgba(196,164,90,.3);border-radius:2px;font-size:12px;cursor:pointer;font-family:inherit">JSON 내보내기</button>
+          <button onclick="importJSON()" style="padding:8px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:2px;font-size:12px;cursor:pointer;font-family:inherit">JSON 가져오기</button>
+        </div>
+      </div>
+
+      <div class="listing-table">
+        <div class="table-header">
+          <div>#</div><div>매물명</div><div>거래</div><div>금액</div><div>타입</div><div>관리</div>
+        </div>
+        <div id="table-body"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+<input type="file" id="json-file-input" accept=".json" class="hidden" onchange="handleJSONImport(event)">
+
+<script>
+/* ── 비밀번호 (실서비스 시 서버 인증으로 교체) ── */
+const ADMIN_PW = 'hawujae2026';
+
+/* ── localStorage 키 ── */
+const STORE_KEY = 'hawujae_listings';
+const SESSION_KEY = 'hawujae_admin_ok';
+
+let tags = [];
+let listings = [];
+let nextId = 100;
+
+/* ── 로그인 ── */
+function doLogin() {
+  const pw = document.getElementById('pw-input').value;
+  const err = document.getElementById('login-err');
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-screen').classList.remove('hidden');
+    loadListings();
+  } else {
+    err.textContent = '비밀번호가 틀렸습니다.';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+/* ── 초기화 ── */
+window.onload = function() {
+  if (sessionStorage.getItem(SESSION_KEY)) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-screen').classList.remove('hidden');
+    loadListings();
+  }
+  // 초기 샘플 데이터 로드 (처음 실행 시)
+  const stored = localStorage.getItem(STORE_KEY);
+  if (!stored) {
+    // data.js에서 기본 매물 복사
+    const init = window.AppData ? JSON.parse(JSON.stringify(AppData.properties)) : [];
+    localStorage.setItem(STORE_KEY, JSON.stringify(init));
+    if (init.length) nextId = Math.max(...init.map(p=>p.id)) + 1;
+  }
+};
+
+function loadListings() {
+  const raw = localStorage.getItem(STORE_KEY);
+  listings = raw ? JSON.parse(raw) : [];
+  if (listings.length) nextId = Math.max(...listings.map(p=>p.id)) + 1;
+  renderTable();
+}
+
+function saveListing() {
+  localStorage.setItem(STORE_KEY, JSON.stringify(listings));
+}
+
+/* ── 테이블 렌더 ── */
+function renderTable() {
+  const tbody = document.getElementById('table-body');
+  const count = document.getElementById('listing-count');
+  count.textContent = `총 ${listings.length}건`;
+
+  if (!listings.length) {
+    tbody.innerHTML = '<div class="empty-state">등록된 매물이 없습니다.<br>왼쪽 폼에서 새 매물을 등록하세요.</div>';
+    return;
+  }
+
+  tbody.innerHTML = listings.map(p => {
+    const dealLabel = p.deal.type==='monthly'
+      ? `보증 ${p.deal.deposit?.toLocaleString()}만 / 월 ${p.deal.monthly}만`
+      : p.deal.type==='jeonse'
+      ? `전세 ${(p.deal.jeonse/10000).toFixed(1)}억`
+      : `매매 ${(p.deal.price/10000).toFixed(1)}억`;
+    const badge = p.deal.type==='monthly'?'badge-monthly':p.deal.type==='jeonse'?'badge-jeonse':'badge-sale';
+    const dealTxt = p.deal.type==='monthly'?'월세':p.deal.type==='jeonse'?'전세':'매매';
+    const typeLabel = {oneroom:'원룸',office:'오피스',building:'건물',land:'토지',construction:'건축부지'}[p.type]||p.type;
+    return `<div class="table-row">
+      <div class="table-id">${p.id}</div>
+      <div><div class="table-title">${p.title}</div><div class="table-sub">${p.shortAddr} · ${p.size}㎡</div></div>
+      <div class="table-cell"><span class="badge ${badge}">${dealTxt}</span></div>
+      <div class="table-cell" style="font-size:11px">${dealLabel}</div>
+      <div class="table-cell">${typeLabel}</div>
+      <div class="action-btns">
+        <button class="edit-btn" onclick="editListing(${p.id})">수정</button>
+        <button class="del-btn" onclick="deleteListing(${p.id})">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── 등록 / 수정 ── */
+function submitListing() {
+  const title = document.getElementById('f-title').value.trim();
+  const shortAddr = document.getElementById('f-short-addr').value.trim();
+  const fullAddr = document.getElementById('f-full-addr').value.trim();
+  if (!title || !shortAddr || !fullAddr) { toast('필수 항목을 입력하세요.'); return; }
+
+  const dealType = document.getElementById('f-deal-type').value;
+  let deal = { type: dealType };
+  if (dealType === 'monthly') {
+    deal.deposit = parseInt(document.getElementById('f-deposit').value)||0;
+    deal.monthly = parseInt(document.getElementById('f-monthly').value)||0;
+  } else if (dealType === 'jeonse') {
+    deal.jeonse = parseInt(document.getElementById('f-jeonse').value)||0;
+  } else {
+    deal.price = parseInt(document.getElementById('f-price').value)||0;
+  }
+
+  const typeLabel = {oneroom:'원룸',office:'사무실',building:'건물',land:'토지',construction:'건축부지'}[document.getElementById('f-type').value]||'원룸';
+
+  const editId = parseInt(document.getElementById('edit-id').value||'0');
+  const p = {
+    id: editId || nextId++,
+    type: document.getElementById('f-type').value,
+    typeLabel,
+    title,
+    shortAddr,
+    fullAddr,
+    deal,
+    size: parseFloat(document.getElementById('f-size').value)||0,
+    floor: parseInt(document.getElementById('f-floor').value)||null,
+    totalFloor: parseInt(document.getElementById('f-total-floor').value)||null,
+    direction: document.getElementById('f-direction').value||null,
+    element: document.getElementById('f-element').value,
+    lat: parseFloat(document.getElementById('f-lat').value)||37.5577,
+    lng: parseFloat(document.getElementById('f-lng').value)||126.9248,
+    distance: parseInt(document.getElementById('f-distance').value)||null,
+    builtYear: parseInt(document.getElementById('f-built').value)||null,
+    parking: document.getElementById('f-parking').checked,
+    elevator: document.getElementById('f-elevator').checked,
+    pet: document.getElementById('f-pet').checked,
+    tags: [...tags],
+    desc: document.getElementById('f-desc').value.trim(),
+    agent: document.getElementById('f-agent').value.trim()||'하우재 공인중개사사무소',
+    agentPhone: document.getElementById('f-phone').value.trim()||'02-333-1234'
+  };
+
+  if (editId) {
+    const idx = listings.findIndex(x=>x.id===editId);
+    if (idx>=0) listings[idx]=p;
+    toast('✅ 매물이 수정됐습니다.');
+  } else {
+    listings.push(p);
+    toast('✅ 매물이 등록됐습니다.');
+  }
+  saveListing();
+  renderTable();
+  resetForm();
+}
+
+function editListing(id) {
+  const p = listings.find(x=>x.id===id);
+  if (!p) return;
+  document.getElementById('edit-id').value = id;
+  document.getElementById('form-mode-title').textContent = '매물 수정';
+  document.getElementById('submit-btn').textContent = '✏️ 매물 수정';
+
+  document.getElementById('f-type').value = p.type;
+  document.getElementById('f-title').value = p.title;
+  document.getElementById('f-short-addr').value = p.shortAddr;
+  document.getElementById('f-full-addr').value = p.fullAddr;
+  document.getElementById('f-element').value = p.element||'earth';
+  document.getElementById('f-deal-type').value = p.deal.type;
+  updateDealFields();
+  if (p.deal.type==='monthly') {
+    document.getElementById('f-deposit').value = p.deal.deposit||'';
+    document.getElementById('f-monthly').value = p.deal.monthly||'';
+  } else if (p.deal.type==='jeonse') {
+    document.getElementById('f-jeonse').value = p.deal.jeonse||'';
+  } else {
+    document.getElementById('f-price').value = p.deal.price||'';
+  }
+  document.getElementById('f-size').value = p.size||'';
+  document.getElementById('f-floor').value = p.floor||'';
+  document.getElementById('f-total-floor').value = p.totalFloor||'';
+  document.getElementById('f-direction').value = p.direction||'';
+  document.getElementById('f-distance').value = p.distance||'';
+  document.getElementById('f-lat').value = p.lat||'';
+  document.getElementById('f-lng').value = p.lng||'';
+  document.getElementById('f-built').value = p.builtYear||'';
+  document.getElementById('f-parking').checked = !!p.parking;
+  document.getElementById('f-elevator').checked = !!p.elevator;
+  document.getElementById('f-pet').checked = !!p.pet;
+  document.getElementById('f-desc').value = p.desc||'';
+  document.getElementById('f-agent').value = p.agent||'하우재 공인중개사사무소';
+  document.getElementById('f-phone').value = p.agentPhone||'02-333-1234';
+  tags = [...(p.tags||[])];
+  renderTags();
+
+  document.querySelector('.admin-sidebar').scrollTop = 0;
+}
+
+function deleteListing(id) {
+  if (!confirm('이 매물을 삭제하시겠습니까?')) return;
+  listings = listings.filter(x=>x.id!==id);
+  saveListing();
+  renderTable();
+  toast('🗑️ 매물이 삭제됐습니다.');
+}
+
+function resetForm() {
+  document.getElementById('edit-id').value = '';
+  document.getElementById('form-mode-title').textContent = '신규 매물 등록';
+  document.getElementById('submit-btn').textContent = '✚ 매물 등록';
+  ['f-title','f-short-addr','f-full-addr','f-deposit','f-monthly','f-jeonse','f-price',
+   'f-size','f-floor','f-total-floor','f-distance','f-lat','f-lng','f-built','f-desc'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('f-type').value = 'oneroom';
+  document.getElementById('f-element').value = 'fire';
+  document.getElementById('f-deal-type').value = 'monthly';
+  document.getElementById('f-direction').value = '';
+  document.getElementById('f-agent').value = '하우재 공인중개사사무소';
+  document.getElementById('f-phone').value = '02-333-1234';
+  document.getElementById('f-parking').checked = false;
+  document.getElementById('f-elevator').checked = false;
+  document.getElementById('f-pet').checked = false;
+  tags = [];
+  renderTags();
+  updateDealFields();
+}
+
+/* ── 거래 유형 필드 토글 ── */
+function updateDealFields() {
+  const t = document.getElementById('f-deal-type').value;
+  document.getElementById('deal-monthly').classList.toggle('hidden', t!=='monthly');
+  document.getElementById('deal-jeonse').classList.toggle('hidden', t!=='jeonse');
+  document.getElementById('deal-sale').classList.toggle('hidden', t!=='sale');
+}
+
+/* ── 태그 ── */
+function handleTagKey(e) {
+  if (e.key==='Enter'||e.key===',') {
+    e.preventDefault();
+    const v = e.target.value.replace(',','').trim();
+    if (v && !tags.includes(v)) { tags.push(v); renderTags(); }
+    e.target.value = '';
+  }
+}
+function removeTag(t) { tags=tags.filter(x=>x!==t); renderTags(); }
+function renderTags() {
+  const wrap = document.getElementById('tags-wrap');
+  const input = document.getElementById('tag-input');
+  wrap.innerHTML = '';
+  tags.forEach(t => {
+    const chip = document.createElement('span');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t} <button onclick="removeTag('${t}')">×</button>`;
+    wrap.appendChild(chip);
+  });
+  wrap.appendChild(input);
+}
+
+/* ── JSON 내보내기/가져오기 ── */
+function exportJSON() {
+  const data = JSON.stringify(listings, null, 2);
+  const blob = new Blob([data], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='hawujae_listings.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 JSON 파일이 다운로드됩니다.');
+}
+function importJSON() { document.getElementById('json-file-input').click(); }
+function handleJSONImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!Array.isArray(data)) throw new Error('배열 형식이 아닙니다');
+      if (!confirm(`${data.length}건의 매물을 가져옵니다. 기존 데이터를 덮어씁니다. 계속하시겠습니까?`)) return;
+      listings = data;
+      if (listings.length) nextId = Math.max(...listings.map(p=>p.id))+1;
+      saveListing();
+      renderTable();
+      toast(`✅ ${data.length}건 가져오기 완료`);
+    } catch(err) { toast('❌ JSON 파싱 오류: '+err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+/* ── 토스트 ── */
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

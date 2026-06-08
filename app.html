@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0F1628">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>하우재 공인중개사사무소 — 홍대·마포 부동산 &amp; AI 사주</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Leaflet (지도) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .logo-img { width:40px; height:40px; object-fit:contain; }
+    .logo-img-sm { width:28px; height:28px; object-fit:contain; }
+    .logo-img-lg { width:72px; height:72px; object-fit:contain; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- 사주 엔진 -->
+  <script src="js/lunar.js"></script>
+  <script src="js/saju.js"></script>
+  <!-- 매물 데이터 -->
+  <script src="js/data.js"></script>
+  <!-- Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- 지도 뷰 -->
+  <script src="js/map.js"></script>
+  <!-- 매물 뷰 -->
+  <script src="js/listings.js"></script>
+  <!-- 사주 화면 뷰 -->
+  <script src="js/sajuview.js"></script>
+  <!-- 앱 메인 -->
+  <script src="js/app.js"></script>
+
+  <!--
+  ══ 네이버 지도 연동 방법 ══
+  1. https://www.ncloud.com/ → AI·NAVER API → Maps 서비스 신청
+  2. Client ID 발급 후 아래 주석 해제:
+  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"></script>
+  3. js/map.js 하단 주석 참고하여 init() 함수를 네이버 방식으로 교체
+  ══════════════════════════
+  -->
+</body>
+</html>

@@ -109,7 +109,7 @@ window.MarketView = (function() {
         <div class="card" style="border-left:3px solid var(--gold);margin-top:4px">
           <div style="font-size:13px;color:var(--on-muted);line-height:1.8;margin-bottom:12px">
             💡 원하는 동의 매물을 찾고 계신가요?<br>
-            <b style="color:white">건축사+공인중개사</b>가 직접 현장을 확인해드립니다.
+            <b style="color:var(--navy)">건축사+공인중개사</b>가 직접 현장을 확인해드립니다.
           </div>
           <a href="https://open.kakao.com/o/hawujae" target="_blank" class="kakao-btn">
             카카오 상담 신청
@@ -135,7 +135,7 @@ window.MarketView = (function() {
         <div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
             <span style="font-size:20px">${d.emoji}</span>
-            <span style="font-weight:800;font-size:15px;color:white">${d.dong}</span>
+            <span style="font-weight:800;font-size:15px;color:var(--on-surface)">${d.dong}</span>
           </div>
           <div style="font-size:11px;color:var(--on-muted)">${d.desc}</div>
         </div>
@@ -144,13 +144,13 @@ window.MarketView = (function() {
 
       <!-- 시세 박스 -->
       <div style="background:var(--navy);border-radius:4px;padding:12px;margin-bottom:10px">
-        <div style="font-size:11px;color:var(--on-muted);margin-bottom:6px;letter-spacing:.5px">
+        <div style="font-size:11px;color:var(--on-navy);margin-bottom:6px;letter-spacing:.5px">
           평균 ${activeType==='monthly'?'월세':activeType==='jeonse'?'전세':'매매가'}
         </div>
         <div style="font-size:17px;font-weight:800;color:var(--gold);margin-bottom:3px">
           ${info.avg}
         </div>
-        <div style="font-size:11px;color:var(--on-muted)">
+        <div style="font-size:11px;color:var(--on-navy)">
           범위: ${info.range}
         </div>
       </div>

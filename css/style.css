@@ -804,7 +804,7 @@ select.form-input option { background: white; color: #1A1A18; }
 .consult-contact-row {
   display: flex; align-items: center; gap: 14px;
   padding: 12px 0; border-bottom: 1px solid var(--border);
-  text-decoration: none; color: white;
+  text-decoration: none; color: var(--on-surface);
 }
 .consult-contact-row:last-child { border-bottom: none; }
 

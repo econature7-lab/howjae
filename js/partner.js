@@ -81,7 +81,7 @@ window.PartnerView = (function() {
     <div class="card" style="margin-bottom:12px;border-left:3px solid var(--gold)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div>
-          <div style="font-weight:700;font-size:15px;color:white;margin-bottom:4px">${p.name}</div>
+          <div style="font-weight:700;font-size:15px;color:var(--on-surface);margin-bottom:4px">${p.name}</div>
           <span style="font-size:11px;background:rgba(196,164,90,.15);color:var(--gold);
             padding:3px 8px;border-radius:2px;font-weight:600">${roleLabel}</span>
         </div>

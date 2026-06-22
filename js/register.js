@@ -207,12 +207,12 @@ window.RegisterView = (function() {
       justify-content:center;padding:40px 24px;padding-bottom:100px">
       <div style="text-align:center;max-width:280px">
         <div style="font-size:72px;margin-bottom:20px">✅</div>
-        <div style="font-size:20px;font-weight:800;color:white;margin-bottom:10px">
+        <div style="font-size:20px;font-weight:800;color:var(--navy);margin-bottom:10px">
           등록 신청 완료!
         </div>
         <div style="font-size:14px;color:var(--on-muted);line-height:1.9;margin-bottom:28px">
           심지연 대표가 검토 후<br>
-          <b style="color:white">1영업일 이내</b> 연락드립니다.
+          <b style="color:var(--navy)">1영업일 이내</b> 연락드립니다.
         </div>
         <button onclick="App.goTab('home')"
           style="background:var(--gold);color:#1A2340;border:none;border-radius:3px;

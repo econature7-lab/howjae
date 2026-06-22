@@ -150,7 +150,7 @@ window.ChecklistView = (function() {
       <div class="card" style="border-left:3px solid var(--gold);margin-bottom:12px">
         <div style="font-size:13px;color:var(--on-muted);line-height:1.8;margin-bottom:12px">
           💡 ${msg}<br>
-          <b style="color:white">건축사+공인중개사</b>가 함께 검토해드립니다.
+          <b style="color:var(--navy)">건축사+공인중개사</b>가 함께 검토해드립니다.
         </div>
         <a href="https://open.kakao.com/o/hawujae" target="_blank" class="kakao-btn">
           카카오 상담 신청

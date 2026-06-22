@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   { key:'listings',  icon:'⊞',  label:'매물'   },
   { key:'map',       icon:'◎',  label:'지도'   },
   { key:'calc',      icon:'⊟',  label:'계산기'  },
-  { key:'architect', icon:'🏗️', label:'건축진단' },
+  { key:'moving',    icon:'📅', label:'이사날짜' },
   { key:'consult',   icon:'💬', label:'상담'   }
 ];
 
@@ -71,7 +71,7 @@ function renderScreen() {
     case 'listings':  wrap.innerHTML = renderListings();         break;
     case 'map':       wrap.innerHTML = MapView.renderScreen();   break;
     case 'calc':      wrap.innerHTML = CalcView.render();        break;
-    case 'architect': wrap.innerHTML = renderArchitectSection(); break;
+    case 'moving':    MovingView.render(); return;
     case 'consult':   wrap.innerHTML = renderConsult();          break;
     default:          wrap.innerHTML = renderHome();             break;
   }
@@ -120,18 +120,18 @@ function renderHome() {
 
     <div style="padding:18px 16px 0">
 
-      <!-- 건축사 무료 진단 배너 -->
-      <button onclick="goTab('architect')" style="width:100%;cursor:pointer;
+      <!-- 손없는날 바로 확인 배너 -->
+      <button onclick="goTab('moving')" style="width:100%;cursor:pointer;
         background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
         border:1px solid rgba(196,164,90,.35);
         border-left:3px solid var(--gold);
         border-radius:4px;padding:16px 18px;margin-bottom:12px;
         display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
         box-shadow:0 4px 20px rgba(15,22,40,.15)">
-        <div style="font-size:28px;flex-shrink:0">🏗️</div>
+        <div style="font-size:28px;flex-shrink:0">📅</div>
         <div style="flex:1;min-width:0">
-          <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">건축사 무료 진단 상담 신청</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">건물 매입 전 20항목 체크리스트<br>건축사가 직접 확인해 드립니다</div>
+          <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">손없는날 바로 확인</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">이사에 좋은 날을 달력으로 확인하고<br>카카오 상담으로 계약 날짜를 잡아보세요</div>
         </div>
         <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
       </button>
@@ -154,8 +154,8 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('calc')">
           <span class="quick-icon">⊟</span><span>계산기</span>
         </button>
-        <button class="quick-btn" onclick="goTab('architect')">
-          <span class="quick-icon">🏗️</span><span>건축진단</span>
+        <button class="quick-btn" onclick="goTab('moving')">
+          <span class="quick-icon">📅</span><span>이사날짜</span>
         </button>
       </div>
 
@@ -301,15 +301,15 @@ function renderConsult() {
       </a>
     </div>
 
-    <!-- 건축진단 안내 -->
-    <div class="consult-info-card" onclick="App.goTab('architect')" style="cursor:pointer">
-      <div class="section-title" style="margin-bottom:10px">🏗️ 건물 매입 전 건축 진단</div>
+    <!-- 이사날짜 안내 -->
+    <div class="consult-info-card" onclick="App.goTab('moving')" style="cursor:pointer">
+      <div class="section-title" style="margin-bottom:10px">📅 이사 좋은 날 확인하기</div>
       <p class="info-text" style="font-size:13px;line-height:1.8">
-        건물 매입 전 건축사가 직접 20항목을 체크합니다.<br>
-        불법증축, 내진설계, 소방시설 등 전문 진단 후<br>
-        <span style="color:var(--gold);font-weight:600">무료 상담</span>을 연결해 드립니다.
+        손없는날(음력 9·10·19·20일)을 달력으로 확인하세요.<br>
+        이사에 길한 날짜를 고르고<br>
+        <span style="color:var(--gold);font-weight:600">카카오 상담</span>으로 계약 날짜를 잡아보세요.
       </p>
-      <div style="font-size:12px;color:var(--gold);margin-top:10px">→ 건축진단 체크리스트 보기</div>
+      <div style="font-size:12px;color:var(--gold);margin-top:10px">→ 손없는날 달력 보기</div>
     </div>
 
     <!-- 사무소 정보 -->

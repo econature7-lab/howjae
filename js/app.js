@@ -77,6 +77,7 @@ function renderScreen() {
     case 'map':        wrap.innerHTML = MapView.renderScreen();   break;
     case 'calc':       wrap.innerHTML = CalcView.render();        break;
     case 'moving':     MovingView.render(); return;
+    case 'market':     MarketView.render(); return;
     default:           wrap.innerHTML = renderHome();             break;
   }
   wrap.scrollTop = 0;
@@ -160,6 +161,9 @@ function renderHome() {
         </button>
         <button class="quick-btn" onclick="goTab('moving')">
           <span class="quick-icon">📅</span><span>이사날짜</span>
+        </button>
+        <button class="quick-btn" onclick="goTab('market')">
+          <span class="quick-icon">📊</span><span>시세</span>
         </button>
       </div>
 

@@ -59,6 +59,12 @@ window.ChecklistView = (function() {
           cursor:pointer;font-family:inherit;font-weight:600">
           🧮 수익률 계산기
         </button>
+        <button onclick="App.goTab('market')"
+          style="flex:1;background:var(--navy2);border:1px solid rgba(196,164,90,.3);
+          border-radius:4px;padding:13px 8px;font-size:12px;color:var(--gold);
+          cursor:pointer;font-family:inherit;font-weight:600">
+          📊 동별 시세
+        </button>
       </div>
     </div>`;
   }

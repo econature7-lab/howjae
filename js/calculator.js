@@ -1,6 +1,6 @@
 /**
  * calculator.js — 부동산 계산기
- * 전월세 전환 / 수익률 / 대출 이자 3종 + 외부 링크
+ * 전월세 전환 / 수익률 (2종) — 대출은 독립 화면(loan)으로 분리
  */
 window.CalcView = (function () {
   let activeCalc = 'convert';
@@ -12,7 +12,7 @@ window.CalcView = (function () {
       <div style="padding:0 16px">
         <div class="page-header">
           <div class="page-header-title">계산기</div>
-          <div class="page-header-sub">전월세 전환 · 수익률 · 대출</div>
+          <div class="page-header-sub">전월세 전환 · 수익률</div>
         </div>
       </div>
 
@@ -22,8 +22,6 @@ window.CalcView = (function () {
           onclick="CalcView.switchCalc('convert')">⇄ 전월세</button>
         <button class="calc-tab-btn ${activeCalc==='yield'?'active':''}" data-key="yield"
           onclick="CalcView.switchCalc('yield')">% 수익률</button>
-        <button class="calc-tab-btn ${activeCalc==='loan'?'active':''}" data-key="loan"
-          onclick="CalcView.switchCalc('loan')">₩ 대출</button>
       </div>
 
       <div id="calc-body" style="padding:16px">
@@ -35,8 +33,27 @@ window.CalcView = (function () {
   function getCalcBody() {
     if (activeCalc === 'convert') return renderConvert();
     if (activeCalc === 'yield')   return renderYield();
-    if (activeCalc === 'loan')    return renderLoan();
     return '';
+  }
+
+  /* ── 대출 독립 페이지 렌더 ── */
+  function renderLoanPage() {
+    return `
+    <div style="background:var(--bg);min-height:100%;padding-bottom:80px">
+      <!-- 앱바 -->
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px 10px;
+        background:var(--bg);border-bottom:1px solid var(--border)">
+        <button onclick="goTab('home')" style="background:none;border:none;cursor:pointer;
+          color:var(--gold);font-size:20px;padding:0 6px;line-height:1">‹</button>
+        <div>
+          <div style="font-size:15px;font-weight:800;color:white;letter-spacing:-.3px">대출 계산기</div>
+          <div style="font-size:10px;color:var(--on-muted)">원리금 균등상환 · DSR 참고</div>
+        </div>
+      </div>
+      <div style="padding:16px">
+        ${renderLoan()}
+      </div>
+    </div>`;
   }
 
   /* ── 전월세 전환 계산기 ── */
@@ -334,5 +351,5 @@ window.CalcView = (function () {
       b.classList.toggle('active', parseInt(b.dataset.year) === y));
   }
 
-  return { render, switchCalc, setConvertMode, calcConvert, calcConvert2, calcYield, calcLoan, setPeriod };
+  return { render, renderLoanPage, switchCalc, setConvertMode, calcConvert, calcConvert2, calcYield, calcLoan, setPeriod };
 })();

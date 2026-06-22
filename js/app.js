@@ -76,6 +76,7 @@ function renderScreen() {
     // 숨겨진 경로 (버튼으로 접근 가능)
     case 'map':        wrap.innerHTML = MapView.renderScreen();   break;
     case 'calc':       wrap.innerHTML = CalcView.render();        break;
+    case 'loan':       wrap.innerHTML = CalcView.renderLoanPage(); break;
     case 'moving':     MovingView.render(); return;
     case 'market':     MarketView.render(); return;
     default:           wrap.innerHTML = renderHome();             break;
@@ -165,7 +166,7 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('market')">
           <span class="quick-icon">📊</span><span>시세</span>
         </button>
-        <button class="quick-btn" onclick="goTab('calc');setTimeout(()=>CalcView.switchCalc('loan'),50)">
+        <button class="quick-btn" onclick="goTab('loan')">
           <span class="quick-icon">💰</span><span>대출</span>
         </button>
       </div>

@@ -3,7 +3,7 @@
  * 하우재 공인중개사사무소
  */
 
-const CACHE_NAME = 'hawujae-v6';
+const CACHE_NAME = 'hawujae-v7';
 
 // 캐시할 핵심 파일들
 const CORE_ASSETS = [

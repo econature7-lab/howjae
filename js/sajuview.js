@@ -104,6 +104,23 @@ function renderSajuInput() {
           </select>
         </div>
       </div>
+
+      <!-- 개인정보 수집 동의 (공인중개사법 제18조의2) -->
+      <div style="background:rgba(196,164,90,.06);border:1px solid rgba(196,164,90,.2);
+        border-radius:4px;padding:14px 16px;margin-bottom:12px">
+        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+          <input type="checkbox" id="privacyConsent"
+            style="margin-top:2px;width:16px;height:16px;accent-color:#C4A45A;flex-shrink:0">
+          <span style="font-size:12px;color:rgba(255,255,255,.65);line-height:1.7">
+            생년월일은 사주 분석 목적으로만 사용되며,
+            <strong style="color:rgba(255,255,255,.85)">서버에 저장되지 않습니다.</strong>
+            브라우저 내에서만 처리 후 즉시 삭제됩니다.<br>
+            <a href="privacy.html" target="_blank"
+              style="color:var(--gold);font-size:11px">개인정보처리방침 보기 →</a>
+          </span>
+        </label>
+      </div>
+
       <button class="btn-primary" onclick="doCalc()">🔮 사주 분석하기</button>
       <div class="error-msg" id="errMsg"></div>
     </div>
@@ -118,7 +135,13 @@ function doCalc() {
   const hv    = document.getElementById('bHour')?.value;
   const hour  = (hv && hv !== '') ? parseInt(hv) : null;
   const err   = document.getElementById('errMsg');
+  const consent = document.getElementById('privacyConsent');
 
+  if (consent && !consent.checked) {
+    if(err) err.textContent='개인정보 수집에 동의해 주세요.';
+    consent.parentElement.parentElement.style.border='1px solid rgba(198,40,40,.5)';
+    return;
+  }
   if (!year||!month||!day) { if(err) err.textContent='생년월일을 모두 입력해주세요.'; return; }
   if (year<1930||year>2010) { if(err) err.textContent='1930~2010년 사이를 입력해주세요.'; return; }
   if(err) err.textContent='';

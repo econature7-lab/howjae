@@ -201,7 +201,7 @@ function renderHome() {
 
       <!-- 소개 -->
       <div style="background:var(--surface);border-radius:4px;border:1px solid var(--border);
-        padding:18px;border-left:3px solid var(--gold);margin-bottom:4px">
+        padding:18px;border-left:3px solid var(--gold);margin-bottom:12px">
         <div class="section-title" style="margin-bottom:10px">하우재 공인중개사사무소</div>
         <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
@@ -209,6 +209,30 @@ function renderHome() {
           <span style="color:var(--gold);font-weight:600">사주팔자 오행</span> 기반으로
           방위와 시기에 맞는 매물을 추천합니다.
         </p>
+      </div>
+
+      <!-- 법정 공시 (공인중개사법 제18조의2) -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);
+        border-radius:4px;padding:14px 16px;margin-bottom:4px">
+        <div style="font-size:10px;color:var(--gold);letter-spacing:1.5px;font-weight:700;margin-bottom:8px">
+          ⚖️ 법정 공시
+        </div>
+        <div style="font-size:11px;color:var(--on-muted);line-height:2">
+          상호: 하우재 공인중개사사무소 ·
+          등록관청: 마포구청<br>
+          소재지: 서울특별시 마포구 홍대입구 인근<br>
+          <span style="color:rgba(255,255,255,.25)">※ 사주 서비스는 참고용이며 투자 판단 근거로 사용 불가</span>
+        </div>
+        <div style="margin-top:8px;display:flex;gap:12px">
+          <a href="privacy.html" target="_blank"
+            style="font-size:11px;color:var(--gold);text-decoration:none;opacity:.8">
+            개인정보처리방침 →
+          </a>
+          <a href="tel:02-333-1234"
+            style="font-size:11px;color:var(--on-muted);text-decoration:none">
+            📞 02-333-1234
+          </a>
+        </div>
       </div>
     </div>
   </div>`;

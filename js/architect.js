@@ -84,7 +84,7 @@ function renderArchitectSection() {
       <!-- 진행도 -->
       <div class="arch-progress-card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:13px;font-weight:700;color:white">확인 진행도</span>
+          <span style="font-size:13px;font-weight:700;color:var(--on-surface)">확인 진행도</span>
           <span id="arch-progress" style="font-size:13px;color:var(--gold);font-weight:700">
             ${count} / ${ARCH_CHECKLIST.length} 확인 완료
           </span>

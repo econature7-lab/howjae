@@ -15,22 +15,17 @@ const DIAMOND_SVG_LG = LOGO_LG;
 /* ── 전역 상태 ── */
 let S = {
   tab: 'home',
-  saju: null,
   detailId: null,
-  isLunar: false, isLeap: false,
-  sajuScreen: 'welcome',
-  sajuTab: '개요',
-  favorites: JSON.parse(localStorage.getItem('fav') || '[]'),
-  regionName: ''
+  favorites: JSON.parse(localStorage.getItem('fav') || '[]')
 };
 
 const NAV_ITEMS = [
-  { key:'home',     icon:'⌂',  label:'홈'   },
-  { key:'listings', icon:'⊞',  label:'매물'  },
-  { key:'map',      icon:'◎',  label:'지도'  },
-  { key:'calc',     icon:'⊟',  label:'계산기' },
-  { key:'saju',     icon:'⭐', label:'사주'  },
-  { key:'my',       icon:'○',  label:'마이'  }
+  { key:'home',      icon:'⌂',  label:'홈'    },
+  { key:'listings',  icon:'⊞',  label:'매물'   },
+  { key:'map',       icon:'◎',  label:'지도'   },
+  { key:'calc',      icon:'⊟',  label:'계산기'  },
+  { key:'architect', icon:'🏗️', label:'건축진단' },
+  { key:'consult',   icon:'💬', label:'상담'   }
 ];
 
 /* ── 앱 껍데기 ── */
@@ -72,12 +67,13 @@ function renderScreen() {
   if (!wrap) return;
   if (S.detailId !== null) { wrap.innerHTML = renderDetailPage(); return; }
   switch(S.tab) {
-    case 'home':     wrap.innerHTML = renderHome();            break;
-    case 'listings': wrap.innerHTML = renderListings();        break;
-    case 'map':      wrap.innerHTML = MapView.renderScreen();  break;
-    case 'calc':     wrap.innerHTML = CalcView.render();       break;
-    case 'saju':     wrap.innerHTML = renderSajuSection();     break;
-    case 'my':       wrap.innerHTML = renderMy();              break;
+    case 'home':      wrap.innerHTML = renderHome();             break;
+    case 'listings':  wrap.innerHTML = renderListings();         break;
+    case 'map':       wrap.innerHTML = MapView.renderScreen();   break;
+    case 'calc':      wrap.innerHTML = CalcView.render();        break;
+    case 'architect': wrap.innerHTML = renderArchitectSection(); break;
+    case 'consult':   wrap.innerHTML = renderConsult();          break;
+    default:          wrap.innerHTML = renderHome();             break;
   }
   wrap.scrollTop = 0;
 }
@@ -91,63 +87,17 @@ function renderHome() {
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const dateStr = `${months[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()} · ${dayNames[today.getDay()]}`;
 
-  let sajuBlock = '';
-  if (S.saju) {
-    const rf = Saju.realEstateFortune(S.saju, today.getFullYear());
-    const pers = Saju.PERSONALITY[S.saju.dmEl] || {};
-    sajuBlock = `
-    <div class="home-saju-card" onclick="goTab('saju')" style="cursor:pointer;
-      background:rgba(196,164,90,.08);border:1px solid rgba(196,164,90,.25);
-      border-radius:4px;padding:16px 18px;margin-bottom:12px">
-      <div class="section-title" style="color:var(--gold);margin-bottom:8px">나의 부동산 사주</div>
-      <div style="font-weight:600;margin-bottom:12px;color:white;font-size:14px">${pers.title}</div>
-      <div class="home-score-row">
-        ${[['매수',rf.buyScore],['매도',rf.sellScore],['임대',rf.rentOutScore],['임차',rf.rentInScore]].map(([l,s])=>`
-          <div class="home-mini-score">
-            <div class="hmsc-label">${l}</div>
-            <div class="hmsc-val" style="color:${scoreColorDark(s)}">${s}</div>
-          </div>`).join('')}
-      </div>
-      <div style="font-size:11px;color:var(--gold);margin-top:10px;letter-spacing:.5px">→ 상세 분석 보기</div>
-    </div>`;
-  } else {
-    sajuBlock = `
-    <button onclick="goTab('saju')" style="width:100%;cursor:pointer;
-      background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
-      border:1px solid rgba(196,164,90,.35);
-      border-left:3px solid var(--gold);
-      border-radius:4px;padding:16px 18px;margin-bottom:12px;
-      display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
-      box-shadow:0 4px 20px rgba(15,22,40,.15)">
-      <div style="font-size:28px;flex-shrink:0">⭐</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">사주 입력하고 맞춤 분석 받기</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">매수·매도·이사 최적 시기<br>매물 오행 궁합 분석</div>
-      </div>
-      <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
-    </button>`;
-  }
-
-  const recs = S.saju
-    ? [...AppData.properties].sort((a,b)=>
-        ListingView.propCompat(b,S.saju)-ListingView.propCompat(a,S.saju)).slice(0,3)
-    : AppData.properties.slice(0,3);
-
-  const recCards = recs.map(p => {
-    const cs = ListingView.propCompat(p, S.saju);
-    const cc = cs ? scoreColorDark(cs) : null;
-    return `
+  const recs = AppData.properties.slice(0,3);
+  const recCards = recs.map(p => `
     <div class="rec-card" onclick="openListingDetail(${p.id})">
       <div class="rec-thumb" data-type="${p.type}" style="background:linear-gradient(135deg,var(--navy2),var(--navy3))"></div>
       <div class="rec-info">
         <div class="rec-type">${p.typeLabel} · ${p.shortAddr}</div>
         <div class="rec-title">${p.title}</div>
         <div class="rec-price">${AppData.dealLabel(p.deal)}</div>
-        ${cc ? `<div style="font-size:11px;color:${cc};margin-top:2px">궁합 ${cs}점</div>` : ''}
       </div>
       <div style="font-size:18px;color:rgba(255,255,255,.25);align-self:center">›</div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 
   return `
   <div class="fade-in" style="background:var(--bg);min-height:100%;padding-bottom:70px">
@@ -164,20 +114,30 @@ function renderHome() {
         </div>
         <span style="font-size:10px;color:var(--on-navy);letter-spacing:1px">${dateStr}</span>
       </div>
-      <div class="home-title">사주팔자로 찾는<span class="home-title-gold"><br>나만의 부동산</span></div>
-      <div class="home-sub">홍대 · 연남 · 합정 · 상수 일대</div>
-      ${S.saju ? `` : ``}
+      <div class="home-title">홍대 건물,<span class="home-title-gold"><br>중개사가 잡고<br>건축사가 확인합니다</span></div>
+      <div class="home-sub">건축사+공인중개사 병설 — 홍대·마포구</div>
     </div>
 
     <div style="padding:18px 16px 0">
 
-      <!-- 사주 배너 -->
-      ${sajuBlock}
+      <!-- 건축사 무료 진단 배너 -->
+      <button onclick="goTab('architect')" style="width:100%;cursor:pointer;
+        background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+        border:1px solid rgba(196,164,90,.35);
+        border-left:3px solid var(--gold);
+        border-radius:4px;padding:16px 18px;margin-bottom:12px;
+        display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
+        box-shadow:0 4px 20px rgba(15,22,40,.15)">
+        <div style="font-size:28px;flex-shrink:0">🏗️</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">건축사 무료 진단 상담 신청</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">건물 매입 전 20항목 체크리스트<br>건축사가 직접 확인해 드립니다</div>
+        </div>
+        <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
+      </button>
 
       <!-- 추천 매물 -->
-      <div class="section-title" style="margin-bottom:12px">
-        ${S.saju ? '⭐ 사주 궁합 추천 매물' : '추천 매물'}
-      </div>
+      <div class="section-title" style="margin-bottom:12px">추천 매물</div>
       <div style="background:var(--surface);border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px">
         ${recCards}
       </div>
@@ -194,8 +154,8 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('calc')">
           <span class="quick-icon">⊟</span><span>계산기</span>
         </button>
-        <button class="quick-btn" onclick="goTab('saju')">
-          <span class="quick-icon">✦</span><span>사주</span>
+        <button class="quick-btn" onclick="goTab('architect')">
+          <span class="quick-icon">🏗️</span><span>건축진단</span>
         </button>
       </div>
 
@@ -206,8 +166,8 @@ function renderHome() {
         <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
           원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold);font-weight:600">사주팔자 오행</span> 기반으로
-          방위와 시기에 맞는 매물을 추천합니다.
+          <span style="color:var(--gold);font-weight:600">건축사+공인중개사 병설</span>로
+          건물 매입부터 건축 검토까지 원스톱 서비스.
         </p>
       </div>
 
@@ -220,8 +180,7 @@ function renderHome() {
         <div style="font-size:11px;color:var(--on-muted);line-height:2">
           상호: 하우재 공인중개사사무소 ·
           등록관청: 마포구청<br>
-          소재지: 서울특별시 마포구 홍대입구 인근<br>
-          <span style="color:rgba(255,255,255,.25)">※ 사주 서비스는 참고용이며 투자 판단 근거로 사용 불가</span>
+          소재지: 서울특별시 마포구 홍대입구 인근
         </div>
         <div style="margin-top:8px;display:flex;gap:12px">
           <a href="privacy.html" target="_blank"
@@ -302,43 +261,68 @@ function refreshListings() {
 }
 
 /* ══════════════════════════════════════════════
-   마이 페이지
+   상담 탭
 ══════════════════════════════════════════════ */
-function renderMy() {
-  const favProps = AppData.properties.filter(p => S.favorites.includes(p.id));
+function renderConsult() {
   return `
   <div style="padding:0 16px 20px;background:var(--bg);min-height:100%;padding-bottom:70px">
     <div class="page-header">
-      <div class="page-header-title">마이</div>
+      <div class="page-header-title">상담</div>
+      <div class="page-header-sub">건축사+공인중개사 원스톱 상담</div>
     </div>
-    ${S.saju ? `
-    <div class="card" onclick="S.sajuScreen='result';goTab('saju')" style="cursor:pointer">
-      <div class="section-title" style="margin-bottom:8px">나의 사주</div>
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:36px;height:36px;flex-shrink:0">${DIAMOND_SVG.replace('44 44','36 36')}</div>
-        <div>
-          <div style="font-weight:700;font-size:14px">${Saju.PERSONALITY[S.saju.dmEl]?.title}</div>
-          <div class="info-text" style="margin-top:2px;font-size:12px">일간: ${S.saju.dayMaster} (${Saju.EL_NAME[S.saju.dmEl]}) · ${S.saju.birthYear}년생</div>
-        </div>
-      </div>
-    </div>` : `
-    <div class="card" onclick="goTab('saju')" style="cursor:pointer;border:1px dashed rgba(196,164,90,.4);background:rgba(196,164,90,.04)">
-      <div style="text-align:center;color:var(--gold);padding:10px 0;font-size:13px;font-weight:600;letter-spacing:.3px">✦ 사주 입력하고 맞춤 서비스 받기 →</div>
-    </div>`}
-    <div class="section-title" style="margin-top:14px">관심 매물 (${favProps.length})</div>
-    ${favProps.length ? favProps.map(p=>`
-      <div class="fav-item" onclick="openListingDetail(${p.id})">
-        <span style="font-size:22px">${recEmoji(p.type)}</span>
+
+    <!-- 카카오 오픈카톡 메인 CTA -->
+    <a href="https://open.kakao.com/o/hawujae" target="_blank" class="consult-kakao-btn">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <ellipse cx="11" cy="10.5" rx="9.5" ry="8.5" fill="#3A1D1D" opacity=".1"/>
+        <path d="M11 2C6.029 2 2 5.358 2 9.5c0 2.58 1.638 4.858 4.123 6.233l-1.05 3.893c-.092.34.263.608.562.418L10.178 17c.268.034.542.05.822.05 4.971 0 9-3.358 9-7.5S15.971 2 11 2z" fill="#391B1B"/>
+      </svg>
+      💬 카카오 오픈카톡 상담
+    </a>
+
+    <!-- 연락 수단 -->
+    <div class="consult-info-card">
+      <div class="section-title" style="margin-bottom:14px">연락하기</div>
+      <a href="tel:02-333-1234" class="consult-contact-row">
+        <span style="font-size:20px">📞</span>
         <div style="flex:1;min-width:0">
-          <div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</div>
-          <div style="font-size:12px;color:var(--on-muted)">${AppData.dealLabel(p.deal)}</div>
+          <div style="font-weight:700;font-size:14px">전화 상담</div>
+          <div style="font-size:12px;color:var(--on-muted);margin-top:2px">02-333-1234 · 평일 09:00~18:00</div>
         </div>
-        <button class="fav-del" onclick="event.stopPropagation();removeFav(${p.id})">✕</button>
-      </div>`).join('')
-    : `<div class="card" style="text-align:center;color:var(--on-muted);padding:28px;opacity:.7">
-        관심 매물이 없습니다<br>
-        <span style="font-size:12px;margin-top:4px;display:block">매물 상세에서 🤍 누르세요</span>
-      </div>`}
+        <span style="color:var(--gold);font-size:18px">›</span>
+      </a>
+      <a href="https://open.kakao.com/o/hawujae" target="_blank" class="consult-contact-row">
+        <span style="font-size:20px">💬</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:14px">카카오 오픈카톡</div>
+          <div style="font-size:12px;color:var(--on-muted);margin-top:2px">24시간 문자 상담 가능</div>
+        </div>
+        <span style="color:var(--gold);font-size:18px">›</span>
+      </a>
+    </div>
+
+    <!-- 건축진단 안내 -->
+    <div class="consult-info-card" onclick="App.goTab('architect')" style="cursor:pointer">
+      <div class="section-title" style="margin-bottom:10px">🏗️ 건물 매입 전 건축 진단</div>
+      <p class="info-text" style="font-size:13px;line-height:1.8">
+        건물 매입 전 건축사가 직접 20항목을 체크합니다.<br>
+        불법증축, 내진설계, 소방시설 등 전문 진단 후<br>
+        <span style="color:var(--gold);font-weight:600">무료 상담</span>을 연결해 드립니다.
+      </p>
+      <div style="font-size:12px;color:var(--gold);margin-top:10px">→ 건축진단 체크리스트 보기</div>
+    </div>
+
+    <!-- 사무소 정보 -->
+    <div class="consult-info-card">
+      <div class="section-title" style="margin-bottom:12px">사무소 정보</div>
+      <div style="font-size:13px;color:var(--on-muted);line-height:2.4">
+        <div><span style="color:var(--gold);font-weight:600;margin-right:8px">상호</span>하우재 공인중개사사무소</div>
+        <div><span style="color:var(--gold);font-weight:600;margin-right:8px">소재지</span>서울시 마포구 홍대입구 인근</div>
+        <div><span style="color:var(--gold);font-weight:600;margin-right:8px">등록관청</span>마포구청</div>
+        <div><span style="color:var(--gold);font-weight:600;margin-right:8px">대표</span>심지연 공인중개사</div>
+        <div><span style="color:var(--gold);font-weight:600;margin-right:8px">건축사</span>한상범 건축사</div>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -354,28 +338,6 @@ function scoreColorDark(s) {
 
 function recEmoji(t) {
   return {oneroom:'🏠',office:'🏢',building:'🏗️',land:'🌱',construction:'⚒️'}[t]||'🏠';
-}
-
-function pillarCard(label, p, highlight=false) {
-  const ec = Saju.EL_CLASS[p.sEl];
-  const hl = highlight ? 'class="pillar-card pillar-highlight"' : 'class="pillar-card"';
-  return `<div ${hl}>
-    <div class="pillar-label">${label}</div>
-    <div class="pillar-stem chip-${ec}">${p.stem}(${p.sH})</div>
-    <div class="pillar-branch">${p.branch}(${p.bH})</div>
-  </div>`;
-}
-
-function scoreRowEl(label, score) {
-  const stars = '⭐'.repeat(score>=85?5:score>=70?4:score>=55?3:2);
-  const col = scoreColor(score);
-  return `<div class="score-row">
-    <span class="score-row-label">${label}</span>
-    <div class="score-row-right">
-      <span class="score-stars">${stars}</span>
-      <span class="score-num" style="color:${col}">${score}</span>
-    </div>
-  </div>`;
 }
 
 /* ── 앱 시작 ── */

@@ -1,7 +1,7 @@
 {
   "name": "하우재 공인중개사사무소",
   "short_name": "하우재부동산",
-  "description": "홍대·마포 부동산 중개 + 사주팔자 AI 운세",
+  "description": "홍대·마포 건축사+공인중개사 병설 — 건물 매입부터 확인까지",
   "start_url": "/budongsan-saju/app.html",
   "scope": "/budongsan-saju/",
   "display": "standalone",

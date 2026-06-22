@@ -68,6 +68,7 @@ window.ListingView = (function() {
       <div class="prop-thumb" data-type="${p.type}"${p.img ? ` style="background:url('${p.img}') center/cover no-repeat"` : ''}>
         ${!p.img ? `<div class="prop-thumb-inner">${propEmoji(p.type)}</div>` : ''}
         <div class="prop-thumb-overlay"></div>
+        ${getBadgeHTML(p.badge)}
         <span class="deal-badge deal-${p.deal.type}">${badge}</span>
         ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(196,164,90,.92)':'rgba(15,22,40,.82)'};color:${cs>=80?'#1A2340':'white'}">사주 ${cs}</span>` : ''}
       </div>
@@ -91,6 +92,12 @@ window.ListingView = (function() {
     return `<span style="font-size:44px">${map[type]||'🏠'}</span>`;
   }
 
+  function getBadgeHTML(badge) {
+    if (badge === 2) return `<span class="arch-badge badge-architect">🏗️ 건축검토완료</span>`;
+    if (badge === 1) return `<span class="arch-badge badge-confirmed">📍 위치확인</span>`;
+    return '';
+  }
+
   /* ── 리스트 화면 ── */
   function renderList(saju) {
     const filtered = currentFilter === 'all'
@@ -102,11 +109,10 @@ window.ListingView = (function() {
       ? [...filtered].sort((a,b) => (propCompat(b,saju)||0) - (propCompat(a,saju)||0))
       : filtered;
 
-    const sajuBanner = !saju
-      ? `<div class="saju-prompt-banner" onclick="App.goTab('saju')">
-          ⭐ 사주 입력 시 나에게 맞는 매물 순서로 정렬됩니다
-          <span style="color:var(--gold)">→ 사주 입력</span>
-        </div>` : '';
+    const sajuBanner = `<div class="saju-prompt-banner" onclick="App.goTab('architect')" style="cursor:pointer">
+        🏗️ 건물 매입 전 건축사 무료 진단 받기
+        <span style="color:var(--gold)">→ 건축진단</span>
+      </div>`;
 
     return `
     <div class="listings-screen">

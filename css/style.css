@@ -391,7 +391,7 @@ select.form-input option { background: white; color: #1A1A18; }
 .quick-icon { font-size: 18px; }
 
 /* ===== LISTINGS ===== */
-.list-filter-bar { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; margin-bottom: 14px; }
+.list-filter-bar { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 16px 2px; margin-bottom: 14px; }
 .list-filter-bar::-webkit-scrollbar { display: none; }
 .list-filter-btn {
   flex-shrink: 0; padding: 6px 13px; border-radius: 2px;

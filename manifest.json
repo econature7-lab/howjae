@@ -1,0 +1,30 @@
+{
+  "name": "하우재 공인중개사사무소",
+  "short_name": "하우재부동산",
+  "description": "홍대·마포 부동산 중개 + 사주팔자 AI 운세",
+  "start_url": "/budongsan-saju/app.html",
+  "scope": "/budongsan-saju/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F1628",
+  "theme_color": "#0F1628",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "business"],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

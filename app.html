@@ -5,7 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#0F1628">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="하우재부동산">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>하우재 공인중개사사무소 — 홍대·마포 부동산 &amp; AI 사주</title>
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <!-- iOS 아이콘 -->
+  <link rel="apple-touch-icon" href="assets/logo.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/logo.png">
+  <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
@@ -44,6 +54,17 @@
   <script src="js/sajuview.js"></script>
   <!-- 앱 메인 -->
   <script src="js/app.js"></script>
+
+  <!-- PWA Service Worker 등록 -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('[PWA] Service Worker 등록 완료:', reg.scope))
+          .catch(err => console.warn('[PWA] Service Worker 등록 실패:', err));
+      });
+    }
+  </script>
 
   <!--
   ══ 네이버 지도 연동 방법 ══

@@ -863,7 +863,7 @@ select.form-input option { background: white; color: #1A1A18; }
   padding: 9px 0;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
-  color: var(--on-navy);
+  color: var(--on-surface);
   line-height: 1.5;
   cursor: pointer;
   transition: background .1s;

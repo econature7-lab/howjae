@@ -167,7 +167,7 @@ function renderSajuResult() {
   const moving = Saju.movingInfo(saju);
   const pers   = Saju.PERSONALITY[saju.dmEl];
   const eClass = Saju.EL_CLASS[saju.dmEl];
-  const tabs   = ['개요','매수·매도','임대·임차','이사날짜'];
+  const tabs   = ['개요','매수·매도','임대·임차','이사날짜','날짜분석'];
 
   return `
   <div>
@@ -290,8 +290,115 @@ function sajuTabContent(saju, fortune, moving) {
         <div>${moving.badMonths.map(m=>`<span class="bad-chip">❌ ${m}</span>`).join('')}</div>
       </div>`;
 
+    case '날짜분석': return renderDateAnalysisTab(saju);
+
     default: return '';
   }
+}
+
+/* ══════════════════════════════════════════════
+   날짜 분석 탭 (계약·잔금·이사 날짜 길흉)
+══════════════════════════════════════════════ */
+function renderDateAnalysisTab(saju) {
+  const today    = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const dc  = S.dateCheck  || { date: todayStr, purpose: 'contract' };
+  const opt = S.dateOptMonth|| { ym: `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`, purpose: 'contract' };
+
+  const PURPOSE_LABELS = { contract:'계약일', payment:'잔금일', moving:'이사일' };
+  const purposeBtn = (key) => `
+    <button class="toggle-btn ${dc.purpose===key?'active':''}"
+      onclick="S.dateCheck={...S.dateCheck||{},purpose:'${key}'};refreshSajuTab()"
+      style="flex:1;font-size:12px">${PURPOSE_LABELS[key]}</button>`;
+  const purposeBtn2 = (key) => `
+    <button class="toggle-btn ${opt.purpose===key?'active':''}"
+      onclick="S.dateOptMonth={...S.dateOptMonth||{},purpose:'${key}'};refreshSajuTab()"
+      style="flex:1;font-size:12px">${PURPOSE_LABELS[key]}</button>`;
+
+  // ── 섹션 1: 날짜 길흉 검사기 ──
+  let checkResult = '';
+  if (dc.date) {
+    const parts = dc.date.split('-');
+    if (parts.length === 3) {
+      const [y,m,d] = parts.map(Number);
+      const r = Saju.dateScore(saju, y, m, d, dc.purpose);
+      const col = r.score>=80?'#C4A45A':r.score>=65?'#66BB6A':r.score>=50?'#64B5F6':'#EF5350';
+      const grade = r.score>=80?'대길(大吉)':r.score>=65?'길(吉)':r.score>=50?'보통':'흉(凶)';
+      const nohandTxt = r.isNoHand ? `<span style="color:#66BB6A;font-size:11px">✅ 손없는날 (음력 ${r.lunarDay}일)</span>` : `<span style="color:rgba(255,255,255,.4);font-size:11px">음력 ${r.lunarDay}일</span>`;
+
+      // 대처법 (점수 낮을 때만 펼침)
+      let solutions = '';
+      if (r.score < 65) {
+        const sols = Saju.dateConflictSolutions(saju, y, m, d, dc.purpose);
+        solutions = `
+        <div style="margin-top:12px">
+          <div class="section-title" style="font-size:12px;color:#EF5350;margin-bottom:8px">⚠️ 이 날 피하기 어렵다면?</div>
+          ${sols.map(s=>`
+          <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:18px;flex-shrink:0">${s.icon}</span>
+            <div><div style="font-size:13px;font-weight:600;margin-bottom:2px">${s.title}</div>
+            <div style="font-size:12px;color:var(--on-muted);line-height:1.6">${s.desc}</div></div>
+          </div>`).join('')}
+        </div>`;
+      }
+
+      checkResult = `
+      <div style="text-align:center;padding:12px 0">
+        <div style="font-size:52px;font-weight:700;color:${col}">${r.score}</div>
+        <div style="font-size:16px;font-weight:600;color:${col};margin-bottom:6px">${grade}</div>
+        ${nohandTxt}
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:4px">일진: ${r.dayPillarStr}</div>
+      </div>
+      <div class="score-bar" style="height:8px;margin:8px 0">
+        <div class="score-fill" style="width:${r.score}%;background:${col}"></div>
+      </div>
+      ${solutions}`;
+    }
+  }
+
+  // ── 섹션 2: 최적 날짜 추천 ──
+  let optResult = '';
+  if (opt.ym) {
+    const [oy,om] = opt.ym.split('-').map(Number);
+    const tops = Saju.findBestDates(saju, oy, om, opt.purpose, 5);
+    const DOWS2 = ['일','월','화','수','목','금','토'];
+    optResult = tops.map((t,i) => {
+      const col2 = t.score>=80?'#C4A45A':t.score>=65?'#66BB6A':t.score>=50?'#64B5F6':'#EF5350';
+      return `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="width:22px;height:22px;background:${col2};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--navy);flex-shrink:0">${i+1}</div>
+        <div style="flex:1">
+          <span style="font-weight:700">${om}월 ${t.day}일 (${DOWS2[t.dow]})</span>
+          ${t.isNoHand?'<span style="font-size:10px;color:#66BB6A;margin-left:6px">손없는날</span>':''}
+          <div style="font-size:11px;color:var(--on-muted);margin-top:2px">일진 ${t.dayPillarStr}</div>
+        </div>
+        <div style="font-size:20px;font-weight:700;color:${col2}">${t.score}</div>
+      </div>`;
+    }).join('');
+  }
+
+  return `
+  <div class="card fade-in">
+    <div class="section-title">🔍 날짜 길흉 검사</div>
+    <div class="toggle-group" style="margin-bottom:10px">
+      ${purposeBtn('contract')}${purposeBtn('payment')}${purposeBtn('moving')}
+    </div>
+    <input type="date" class="form-input" id="dateCheckInput"
+      value="${dc.date||todayStr}"
+      onchange="S.dateCheck={...(S.dateCheck||{}),date:this.value};refreshSajuTab()">
+    ${checkResult}
+  </div>
+
+  <div class="card fade-in">
+    <div class="section-title">⭐ 월별 최적 날짜 TOP 5</div>
+    <div class="toggle-group" style="margin-bottom:10px">
+      ${purposeBtn2('contract')}${purposeBtn2('payment')}${purposeBtn2('moving')}
+    </div>
+    <input type="month" class="form-input" id="optMonthInput"
+      value="${opt.ym}"
+      onchange="S.dateOptMonth={...(S.dateOptMonth||{}),ym:this.value};refreshSajuTab()">
+    <div style="margin-top:10px">${optResult}</div>
+  </div>`;
 }
 
 /* ── 지역 궁합 화면 ── */

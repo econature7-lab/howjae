@@ -49,4 +49,27 @@ function lunarToSolar(ly, lm, ld, isLeap=false) {
   return { year: solar.getFullYear(), month: solar.getMonth()+1, day: solar.getDate() };
 }
 
-window.LunarCalendar = { lunarToSolar };
+/**
+ * 양력 → 음력 근사 변환 (손없는날 계산용)
+ */
+function solarToLunar(sy, sm, sd) {
+  const solar = new Date(sy, sm - 1, sd);
+  let lunarYear = sy;
+  let nyArr = LUNAR_NEW_YEAR[sy];
+  if (!nyArr) return null;
+  let newYear = new Date(sy, nyArr[0] - 1, nyArr[1]);
+
+  if (solar < newYear) {
+    lunarYear = sy - 1;
+    nyArr = LUNAR_NEW_YEAR[lunarYear];
+    if (!nyArr) return null;
+    newYear = new Date(lunarYear, nyArr[0] - 1, nyArr[1]);
+  }
+
+  const diffDays = Math.floor((solar - newYear) / 86400000);
+  const lunarMonth = Math.floor(diffDays / 29.5) + 1;
+  const lunarDay   = Math.round(diffDays % 29.5) + 1;
+  return { year: lunarYear, month: Math.min(12, lunarMonth), day: Math.min(30, Math.max(1, lunarDay)) };
+}
+
+window.LunarCalendar = { lunarToSolar, solarToLunar };

@@ -209,7 +209,123 @@ const PERSONALITY = {
   수:{ icon:'💧', title:'현금흐름형 투자자', desc:'월세·임대 수익을 중시. 대학가·역세권 원룸·다가구 물건에 강합니다.' }
 };
 
+/* ── 날짜 길흉 점수 ── */
+// purpose: 'contract'(계약) | 'payment'(잔금) | 'moving'(이사)
+function dateScore(saju, year, month, day, purpose) {
+  purpose = purpose || 'contract';
+  const { dmEl } = saju;
+  let score = 50;
+
+  // 1. 손없는날 (음력 9·10·19·20·29·30)
+  let lunarDay = 0;
+  if (window.LunarCalendar && LunarCalendar.solarToLunar) {
+    const ld = LunarCalendar.solarToLunar(year, month, day);
+    if (ld) lunarDay = ld.day;
+  }
+  const isNoHand = [9,10,19,20,29,30].includes(lunarDay);
+  if (isNoHand) score += (purpose === 'moving' ? 30 : 20);
+
+  // 2. 일진 오행과 일간 궁합
+  const dp   = dayPillar(year, month, day);
+  const dEl  = dp.sEl;
+  if      (GENERATES[dEl] === dmEl)   score += 20;
+  else if (dEl === dmEl)              score += 15;
+  else if (GENERATES[dmEl] === dEl)   score += 10;
+  else if (CONTROLS[dEl] === dmEl)    score -= 22;
+  else if (CONTROLS[dmEl] === dEl)    score -= 10;
+
+  // 3. 길월 보정
+  const mKey = purpose === 'moving' ? 'buy' : purpose === 'payment' ? 'sell' : 'buy';
+  const goodM = (GOOD_MONTHS[dmEl] || {})[mKey] || [];
+  if (goodM.includes(month)) score += 12;
+
+  // 4. 길요일 보정
+  const dow  = new Date(year, month - 1, day).getDay();
+  const DOWS = ['일','월','화','수','목','금','토'];
+  const goodDow = (GOOD_DAYS[dmEl] || []).map(d => d[0]);
+  if (goodDow.includes(DOWS[dow])) score += 10;
+  if (purpose === 'contract' && [3,4].includes(dow)) score += 5;
+
+  return {
+    score    : Math.min(99, Math.max(20, score)),
+    isNoHand, lunarDay, dayEl: dEl,
+    dayPillarStr: dp.stem + dp.branch + '일'
+  };
+}
+
+/* ── 월별 최적 날짜 TOP N ── */
+function findBestDates(saju, year, month, purpose, topN) {
+  purpose = purpose || 'contract'; topN = topN || 5;
+  const days = new Date(year, month, 0).getDate();
+  const results = [];
+  for (let d = 1; d <= days; d++) {
+    const dow = new Date(year, month - 1, d).getDay();
+    if (dow === 0) continue; // 일요일 제외
+    const r = dateScore(saju, year, month, d, purpose);
+    results.push({ day: d, dow, ...r });
+  }
+  return results.sort((a, b) => b.score - a.score).slice(0, topN);
+}
+
+/* ── 날짜 불일치 대처법 ── */
+const GOOD_HOURS = {
+  목:['오전 7~9시','오후 3~5시'], 화:['오전 9~11시','오후 1~3시'],
+  토:['오전 9~11시','오후 1~3시'], 금:['오후 3~5시','오후 7~9시'],
+  수:['오전 7~9시','밤 9~11시']
+};
+function dateConflictSolutions(saju, year, month, day, purpose) {
+  purpose = purpose || 'contract';
+  const { dmEl } = saju;
+  const solutions = [];
+
+  // 시각 조정
+  solutions.push({
+    icon:'⏰', title:'길한 시각에 서명',
+    desc:`${EL_NAME[dmEl]} 일간의 길시: ${(GOOD_HOURS[dmEl]||['오전 9~11시']).join(', ')}에 서명하세요.`
+  });
+
+  // 근접 대체 날짜 탐색
+  const alts = [];
+  for (let offset = 1; offset <= 6 && alts.length < 2; offset++) {
+    [day + offset, day - offset].forEach(nd => {
+      if (nd < 1) return;
+      const nd2 = new Date(year, month - 1, nd);
+      if (nd2.getMonth() + 1 !== month) return;
+      const r = dateScore(saju, year, month, nd, purpose);
+      if (r.score >= 65) alts.push({ day: nd, score: r.score });
+    });
+  }
+  if (alts.length) {
+    solutions.push({
+      icon:'📅', title:'인근 길일로 변경',
+      desc: alts.map(a => `${month}월 ${a.day}일 (${a.score}점)`).join(', ') + ' 으로 조정 제안하세요.'
+    });
+  }
+
+  // 목적별 맞춤 대처
+  if (purpose === 'payment') solutions.push({
+    icon:'💳', title:'중도금 분할 활용',
+    desc:'잔금일을 바로 옮기기 어려우면 중도금을 길일에 납부하고 잔금은 소액으로 남겨두세요.'
+  });
+  if (purpose === 'contract') solutions.push({
+    icon:'📝', title:'가계약 → 본계약 분리',
+    desc:'오늘은 가계약(가서명)만 하고 본계약 날짜를 별도로 길일에 잡는 방법이 있습니다.'
+  });
+  if (purpose === 'moving') solutions.push({
+    icon:'📦', title:'짐 이동일 · 첫 입주일 분리',
+    desc:'이삿짐 이동은 오늘 하더라도, 실제 첫 입주(첫발 들이기)는 손없는날로 맞추세요.'
+  });
+
+  solutions.push({
+    icon:'🧿', title:'나쁜 기운 전환 방법',
+    desc:'계약서 방향을 길방('+Saju.EL_DIR[dmEl]+')으로 놓고 서명하거나, 새 볼펜을 사용하면 기운을 환기할 수 있습니다.'
+  });
+
+  return solutions;
+}
+
 window.Saju = {
   calculateSaju, realEstateFortune, movingInfo, regionCompat, bestMonths,
+  dateScore, findBestDates, dateConflictSolutions,
   GOOD_DAYS, EL_NAME, EL_CLASS, EL_DIR, EL_COLOR, EL_NUM, PERSONALITY
 };

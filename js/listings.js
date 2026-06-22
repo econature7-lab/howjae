@@ -5,61 +5,25 @@ window.ListingView = (function() {
 
   let currentFilter = 'all';
 
-  // 매물 element 필드 (영어) → 사주 오행 (한국어) 변환
-  const EN2KO = { fire:'화', wood:'목', earth:'토', metal:'금', water:'수' };
-  // 한국어 오행 → 영문 CSS 클래스
-  const KO2EN = { 화:'fire', 목:'wood', 토:'earth', 금:'metal', 수:'water' };
-
-  /* ── 오행 사주 궁합 ── */
-  function propCompat(prop, saju) {
-    if (!saju) return null;
-    const GENERATES = { 목:'화', 화:'토', 토:'금', 금:'수', 수:'목' };
-    const CONTROLS  = { 목:'토', 화:'금', 토:'수', 금:'목', 수:'화' };
-    // 매물 element(영어)를 한국어로 변환
-    const pEl = EN2KO[prop.element] || prop.element;
-    const dEl = saju.dmEl;
-    let score = 65;
-    if (GENERATES[pEl] === dEl) score = 90;
-    else if (pEl === dEl)       score = 83;
-    else if (GENERATES[dEl] === pEl) score = 73;
-    else if (CONTROLS[pEl] === dEl)  score = 42;
-    else if (CONTROLS[dEl] === pEl)  score = 55;
-    // 방향 보너스 (방향→한국어오행, 일간과 비교)
-    if (prop.direction) {
-      const DIR_EL = { N:'수', S:'화', E:'목', W:'금', SE:'화', SW:'금', NE:'목', NW:'수' };
-      const dirEl = DIR_EL[prop.direction];
-      if (dirEl === dEl) score = Math.min(99, score + 5);
-    }
-    return Math.min(99, Math.max(30, score));
+  /* ── 배지 ── */
+  function getBadgeHTML(badge) {
+    if (badge === 2) return `<span class="arch-badge badge-architect">🏗️ 건축검토완료</span>`;
+    if (badge === 1) return `<span class="arch-badge badge-confirmed">📍 위치확인</span>`;
+    return '';
   }
 
-  function compatBar(score) {
-    if (!score) return '';
-    const c = score>=80?'#C4A45A':score>=65?'#2E7D32':score>=50?'#1565C0':'#C62828';
-    const label = score>=80?'최길':'길';
-    return `<div class="prop-compat">
-      <span style="font-size:10px;color:var(--on-muted);letter-spacing:.5px">사주궁합</span>
-      <div class="compat-bar-wrap">
-        <div class="compat-bar-fill" style="width:${score}%;background:${c}"></div>
-      </div>
-      <span style="font-size:12px;font-weight:700;color:${c}">${score} ${label}</span>
-    </div>`;
-  }
-
-  function stars(score) {
-    if (!score) return '';
-    const s = Math.round(score / 20);
-    return '★'.repeat(s) + '☆'.repeat(5-s);
+  function propEmoji(type) {
+    const map = { oneroom:'🏠', office:'🏢', building:'🏗️', land:'🌱', construction:'⚒️' };
+    return `<span style="font-size:44px">${map[type]||'🏠'}</span>`;
   }
 
   /* ── 매물 카드 ── */
-  function propCard(p, saju) {
-    const cs = propCompat(p, saju);
-    const badge = AppData.dealBadge(p.deal);
+  function propCard(p) {
+    const badge   = AppData.dealBadge(p.deal);
     const dealTxt = AppData.dealLabel(p.deal);
-    const elCls = p.element ? `chip-${p.element}` : 'chip-earth';
+    const elCls   = p.element ? `chip-${p.element}` : 'chip-earth';
     const floorTxt = p.floor ? `${p.floor}/${p.totalFloor}층` : '';
-    const sizePy = (p.size / 3.305).toFixed(1);
+    const sizePy  = (p.size / 3.305).toFixed(1);
     const distTxt = p.distance ? `역까지 ${p.distance}m` : '';
 
     return `
@@ -70,7 +34,6 @@ window.ListingView = (function() {
         <div class="prop-thumb-overlay"></div>
         ${getBadgeHTML(p.badge)}
         <span class="deal-badge deal-${p.deal.type}">${badge}</span>
-        ${cs ? `<span class="compat-badge" style="background:${cs>=80?'rgba(196,164,90,.92)':'rgba(15,22,40,.82)'};color:${cs>=80?'#1A2340':'white'}">사주 ${cs}</span>` : ''}
       </div>
       <!-- 정보 -->
       <div class="prop-info">
@@ -81,37 +44,20 @@ window.ListingView = (function() {
         <div class="prop-title">${p.title}</div>
         <div class="prop-addr">${p.shortAddr} · 전용 ${p.size}㎡ (${sizePy}평)${floorTxt?' · '+floorTxt:''}</div>
         <div class="prop-price">${dealTxt}</div>
-        ${cs ? compatBar(cs) : '<div class="prop-no-saju">사주 입력 시 궁합 분석 가능</div>'}
         <div class="prop-tags">${p.tags.map(t=>`<span class="prop-tag">#${t}</span>`).join('')}</div>
       </div>
     </div>`;
   }
 
-  function propEmoji(type) {
-    const map = { oneroom:'🏠', office:'🏢', building:'🏗️', land:'🌱', construction:'⚒️' };
-    return `<span style="font-size:44px">${map[type]||'🏠'}</span>`;
-  }
-
-  function getBadgeHTML(badge) {
-    if (badge === 2) return `<span class="arch-badge badge-architect">🏗️ 건축검토완료</span>`;
-    if (badge === 1) return `<span class="arch-badge badge-confirmed">📍 위치확인</span>`;
-    return '';
-  }
-
   /* ── 리스트 화면 ── */
-  function renderList(saju) {
+  function renderList() {
     const filtered = currentFilter === 'all'
       ? AppData.properties
       : AppData.properties.filter(p => p.type === currentFilter);
 
-    // 사주 있으면 궁합순 정렬
-    const sorted = saju
-      ? [...filtered].sort((a,b) => (propCompat(b,saju)||0) - (propCompat(a,saju)||0))
-      : filtered;
-
-    const sajuBanner = `<div class="saju-prompt-banner" onclick="App.goTab('architect')" style="cursor:pointer">
-        🏗️ 건물 매입 전 건축사 무료 진단 받기
-        <span style="color:var(--gold)">→ 건축진단</span>
+    const movingBanner = `<div class="saju-prompt-banner" onclick="App.goTab('moving')" style="cursor:pointer">
+        📅 이사 좋은 날 확인하기
+        <span style="color:var(--gold)">→ 손없는날</span>
       </div>`;
 
     return `
@@ -125,64 +71,27 @@ window.ListingView = (function() {
           </button>`).join('')}
       </div>
 
-      ${sajuBanner}
+      ${movingBanner}
 
       <!-- 결과 수 -->
-      <div class="list-count">${sorted.length}건의 매물</div>
+      <div class="list-count">${filtered.length}건의 매물</div>
 
       <!-- 카드 목록 -->
       <div class="prop-list">
-        ${sorted.map(p => propCard(p, saju)).join('')}
+        ${filtered.map(p => propCard(p)).join('')}
       </div>
     </div>`;
   }
 
   /* ── 상세 화면 ── */
-  function renderDetail(id, saju) {
+  function renderDetail(id) {
     const p = AppData.properties.find(x => x.id === id);
     if (!p) return `<div class="content"><p>매물을 찾을 수 없습니다.</p></div>`;
 
-    const cs = propCompat(p, saju);
     const dealTxt = AppData.dealLabel(p.deal);
-    const sizePy = (p.size / 3.305).toFixed(1);
+    const sizePy  = (p.size / 3.305).toFixed(1);
     const floorTxt = p.floor ? `${p.floor}/${p.totalFloor}층` : '-';
-    const GENS = { 목:'화', 화:'토', 토:'금', 금:'수', 수:'목' };
-    const elCls = `chip-${p.element||'earth'}`;
-
-    // 상세 궁합 설명
-    let compatSection = '';
-    if (saju && cs) {
-      const pElNm = Saju.EL_NAME[EN2KO[p.element]] || '';
-      const dElNm = Saju.EL_NAME[saju.dmEl] || '';
-      const gradeTxt = cs>=80?'최길(最吉)':cs>=65?'길(吉)':cs>=50?'보통':'흉(凶)';
-      const advice = cs>=80
-        ? `이 매물은 ${pElNm} 기운으로, 귀하의 ${dElNm} 일간과 상생합니다. 적극 추천!`
-        : cs>=65 ? `${pElNm}과 ${dElNm}의 궁합이 양호합니다. 안정적 투자를 기대할 수 있습니다.`
-        : cs>=50 ? `보통 궁합입니다. 세부 조건을 꼼꼼히 검토하세요.`
-        : `${pElNm}이 ${dElNm} 일간과 상극 관계입니다. 신중하게 결정하세요.`;
-
-      const scoreColor = cs>=80?'#A8895A':cs>=65?'#2E7D32':cs>=50?'#1565C0':'#C62828';
-      compatSection = `
-      <div class="card">
-        <div class="section-title">✦ 사주 궁합 분석</div>
-        <div style="text-align:center;padding:14px 0">
-          <div style="font-size:60px;font-weight:700;color:${cs>=80?'#C4A45A':scoreColor};font-family:'Playfair Display',serif">${cs}</div>
-          <div style="font-size:16px;font-weight:700;margin-top:4px;color:${scoreColor};letter-spacing:.5px">${gradeTxt}</div>
-          <div style="font-size:14px;color:var(--gold);margin-top:6px;letter-spacing:3px">${stars(cs)}</div>
-        </div>
-        <div class="divider"></div>
-        <p class="info-text" style="margin-top:8px">${advice}</p>
-      </div>`;
-    } else if (!saju) {
-      compatSection = `
-      <div class="card" onclick="App.goTab('saju')" style="cursor:pointer;border:1px dashed rgba(168,137,90,.4);background:rgba(168,137,90,.04)">
-        <div style="text-align:center;padding:10px 0;color:var(--gold)">
-          ✦ 사주를 입력하면 이 매물과의 궁합을 분석해드립니다
-          <div style="font-size:12px;margin-top:6px;color:var(--on-muted);letter-spacing:.3px">→ 사주 입력하기</div>
-        </div>
-      </div>`;
-    }
-
+    const elCls   = `chip-${p.element||'earth'}`;
     const DIR_LABEL = {N:'북향',S:'남향',E:'동향',W:'서향',SE:'남동향',SW:'남서향',NE:'북동향',NW:'북서향'};
 
     return `
@@ -208,6 +117,17 @@ window.ListingView = (function() {
           </div>
         </div>
 
+        <!-- 건축검토완료 배지 안내 -->
+        ${p.badge === 2 ? `
+        <div class="card" style="border-left:3px solid var(--gold);background:rgba(196,164,90,.06)">
+          <div class="section-title">🏗️ 건축사 검토 완료</div>
+          <p class="info-text">건축사사무소 하우재에서 직접 현장 방문 후 건물 상태를 확인한 매물입니다. 불법증축·노후도·리모델링 가능 여부를 사전 점검했습니다.</p>
+        </div>` : p.badge === 1 ? `
+        <div class="card" style="border-left:3px solid #f0b429;background:rgba(240,180,41,.04)">
+          <div class="section-title">📍 위치 확인 완료</div>
+          <p class="info-text">공인중개사가 직접 현장을 방문하여 위치와 주변 환경을 확인한 매물입니다.</p>
+        </div>` : ''}
+
         <!-- 기본 정보 -->
         <div class="card">
           <div class="section-title">기본 정보</div>
@@ -231,10 +151,15 @@ window.ListingView = (function() {
           </div>
         </div>
 
-        <!-- 사주 궁합 -->
-        ${compatSection}
+        <!-- 이사날짜 배너 -->
+        <div class="card" onclick="App.goTab('moving')" style="cursor:pointer;border:1px dashed rgba(196,164,90,.4);background:rgba(196,164,90,.04)">
+          <div style="text-align:center;padding:8px 0;color:var(--gold)">
+            📅 이사 좋은 날 알아보기
+            <div style="font-size:12px;margin-top:6px;color:var(--on-muted)">→ 손없는날 달력 보기</div>
+          </div>
+        </div>
 
-        <!-- 지도에서 보기 버튼 -->
+        <!-- 지도에서 보기 -->
         <button class="btn-outline" style="margin-top:4px;margin-bottom:4px"
           onclick="App.goTab('map');setTimeout(()=>MapView.flyTo(${p.lat},${p.lng}),300)">
           🗺️ 지도에서 위치 보기
@@ -250,7 +175,7 @@ window.ListingView = (function() {
             </div>
             <a href="tel:${p.agentPhone}" class="call-btn">📞 전화</a>
           </div>
-          <a href="https://pf.kakao.com/_hawujae" target="_blank" class="kakao-btn">
+          <a href="https://open.kakao.com/o/hawujae" target="_blank" class="kakao-btn">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="8.5" rx="8" ry="7" fill="#3A1D1D" opacity=".12"/><path d="M9 1.5C4.858 1.5 1.5 4.134 1.5 7.38c0 2.074 1.344 3.895 3.376 4.954l-.862 3.192c-.075.278.215.497.46.343l3.726-2.47c.263.027.529.041.8.041 4.142 0 7.5-2.634 7.5-5.88S13.142 1.5 9 1.5z" fill="#371D1D"/></svg>
             카카오톡 상담
           </a>
@@ -277,5 +202,5 @@ window.ListingView = (function() {
     App.openListingDetail(id);
   }
 
-  return { renderList, renderDetail, setFilter, openDetail, propCompat };
+  return { renderList, renderDetail, setFilter, openDetail };
 })();

@@ -13,12 +13,15 @@ window.MovingView = (() => {
     return lunarDay % 10 === 9 || lunarDay % 10 === 0;
   }
 
-  // 음력 날짜 조회 (lunar.js 의존)
+  // 음력 날짜 조회 (lunar.js 의존) — 반환: { year, month, day }
   function getLunarDay(y, m, d) {
     try {
-      if (typeof solarToLunar === 'function') {
-        const lun = solarToLunar(y, m, d);
-        if (lun) return lun.lunarDay || lun.day || lun[2] || 0;
+      const fn = (typeof solarToLunar === 'function')
+        ? solarToLunar
+        : (window.LunarCalendar && window.LunarCalendar.solarToLunar);
+      if (fn) {
+        const lun = fn(y, m, d);
+        if (lun) return lun.day || 0;
       }
     } catch (e) {}
     return 0;

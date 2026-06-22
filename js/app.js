@@ -207,7 +207,7 @@ function renderListings() {
       <div class="page-header-title">매물</div>
       <div class="page-header-sub">홍대 · 마포구 전 유형 ${AppData.properties.length}건</div>
     </div>
-    ${ListingView.renderList(S.saju)}
+    ${ListingView.renderList()}
   </div>`;
 }
 
@@ -222,7 +222,7 @@ function renderDetailPage() {
         ${S.favorites.includes(S.detailId)?'❤️':'🤍'}
       </button>
     </div>
-    ${ListingView.renderDetail(S.detailId, S.saju)}
+    ${ListingView.renderDetail(S.detailId)}
   </div>`;
 }
 

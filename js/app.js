@@ -165,6 +165,46 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('market')">
           <span class="quick-icon">📊</span><span>시세</span>
         </button>
+        <button class="quick-btn" onclick="goTab('calc');setTimeout(()=>CalcView.switchCalc('loan'),50)">
+          <span class="quick-icon">💰</span><span>대출</span>
+        </button>
+      </div>
+
+      <!-- 서류 발급 사이트 -->
+      <div class="section-title" style="margin-bottom:10px">서류 발급 사이트</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <a href="https://www.courtauction.go.kr" target="_blank"
+          style="background:var(--surface);border:1px solid var(--border);
+          border-radius:4px;padding:12px;text-decoration:none;
+          display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:18px">🏛️</div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy)">법원 경매정보</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.4">낙찰가·입찰 일정 조회</div>
+        </a>
+        <a href="https://rt.molit.go.kr" target="_blank"
+          style="background:var(--surface);border:1px solid var(--border);
+          border-radius:4px;padding:12px;text-decoration:none;
+          display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:18px">🏠</div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy)">국토부 실거래가</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.4">아파트·상가·토지 실거래</div>
+        </a>
+        <a href="https://www.iros.go.kr" target="_blank"
+          style="background:var(--surface);border:1px solid var(--border);
+          border-radius:4px;padding:12px;text-decoration:none;
+          display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:18px">📑</div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy)">인터넷 등기소</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.4">등기부등본 열람·발급</div>
+        </a>
+        <a href="https://www.gov.kr/portal/main" target="_blank"
+          style="background:var(--surface);border:1px solid var(--border);
+          border-radius:4px;padding:12px;text-decoration:none;
+          display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:18px">🏢</div>
+          <div style="font-size:12px;font-weight:700;color:var(--navy)">건축물대장</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.4">위반건축물·용도 확인</div>
+        </a>
       </div>
 
       <!-- 소개 -->

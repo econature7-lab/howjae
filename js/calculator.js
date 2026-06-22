@@ -26,9 +26,6 @@ window.CalcView = (function () {
           onclick="CalcView.switchCalc('loan')">₩ 대출</button>
       </div>
 
-      <!-- 공공 데이터 바로가기 (탭 바 아래 고정 표시) -->
-      ${renderLinks()}
-
       <div id="calc-body" style="padding:16px">
         ${getCalcBody()}
       </div>
@@ -40,32 +37,6 @@ window.CalcView = (function () {
     if (activeCalc === 'yield')   return renderYield();
     if (activeCalc === 'loan')    return renderLoan();
     return '';
-  }
-
-  /* ── 공공 데이터 링크 ── */
-  function renderLinks() {
-    const links = [
-      { icon:'🏛️', label:'법원 경매정보',   sub:'낙찰가·입찰 일정 조회', url:'https://www.courtauction.go.kr' },
-      { icon:'🏠', label:'국토부 실거래가', sub:'아파트·상가·토지 실거래',  url:'https://rt.molit.go.kr' },
-      { icon:'📑', label:'인터넷 등기소',   sub:'등기부등본 열람·발급',     url:'https://www.iros.go.kr' },
-      { icon:'🏢', label:'건축물대장',      sub:'위반건축물·용도 확인',     url:'https://www.gov.kr/portal/main' },
-    ];
-    return `
-    <div style="padding:0 16px 16px">
-      <div style="font-size:11px;font-weight:700;color:var(--gold);
-        letter-spacing:.5px;margin-bottom:10px;opacity:.8">🔗 공공 데이터 바로가기</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        ${links.map(l => `
-          <a href="${l.url}" target="_blank"
-            style="background:var(--navy2);border:1px solid rgba(196,164,90,.2);
-            border-radius:4px;padding:12px;text-decoration:none;
-            display:flex;flex-direction:column;gap:3px">
-            <div style="font-size:18px">${l.icon}</div>
-            <div style="font-size:12px;font-weight:700;color:var(--gold)">${l.label}</div>
-            <div style="font-size:10px;color:var(--on-muted);line-height:1.4">${l.sub}</div>
-          </a>`).join('')}
-      </div>
-    </div>`;
   }
 
   /* ── 전월세 전환 계산기 ── */

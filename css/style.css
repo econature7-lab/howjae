@@ -168,6 +168,7 @@ select.form-input option { background: white; color: #1A1A18; }
   display: inline-flex; align-items: center;
   padding: 3px 9px; border-radius: 2px;
   font-size: 10px; font-weight: 700; margin: 2px; letter-spacing: .5px;
+  white-space: nowrap;
 }
 .chip-wood  { background: rgba(46,125,50,.09);  color: #2E7D32; border: 1px solid rgba(46,125,50,.22); }
 .chip-fire  { background: rgba(198,40,40,.09);  color: #C62828; border: 1px solid rgba(198,40,40,.22); }
@@ -375,7 +376,7 @@ select.form-input option { background: white; color: #1A1A18; }
 
 /* 빠른 메뉴 */
 .quick-menu {
-  display: grid; grid-template-columns: repeat(4,1fr);
+  display: grid; grid-template-columns: repeat(3,1fr);
   gap: 1px; background: var(--border);
   border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
 }

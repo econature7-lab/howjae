@@ -124,31 +124,9 @@ function renderHome() {
       <div class="home-sub">건축사+공인중개사 병설 — 홍대·마포구</div>
     </div>
 
-    <div style="padding:18px 16px 0">
+    <div style="padding:16px 16px 0">
 
-      <!-- 손없는날 바로 확인 배너 -->
-      <button onclick="goTab('moving')" style="width:100%;cursor:pointer;
-        background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
-        border:1px solid rgba(196,164,90,.35);
-        border-left:3px solid var(--gold);
-        border-radius:4px;padding:16px 18px;margin-bottom:12px;
-        display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
-        box-shadow:0 4px 20px rgba(15,22,40,.15)">
-        <div style="font-size:28px;flex-shrink:0">📅</div>
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">손없는날 바로 확인</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">이사에 좋은 날을 달력으로 확인하고<br>카카오 상담으로 계약 날짜를 잡아보세요</div>
-        </div>
-        <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
-      </button>
-
-      <!-- 추천 매물 -->
-      <div class="section-title" style="margin-bottom:12px">추천 매물</div>
-      <div style="background:var(--surface);border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px">
-        ${recCards}
-      </div>
-
-      <!-- 빠른 메뉴 -->
+      <!-- 바로가기 (최상단) -->
       <div class="section-title" style="margin-bottom:10px">바로가기</div>
       <div class="quick-menu" style="margin-bottom:16px">
         <button class="quick-btn" onclick="goTab('listings')">
@@ -160,15 +138,63 @@ function renderHome() {
         <button class="quick-btn" onclick="goTab('calc')">
           <span class="quick-icon">⊟</span><span>계산기</span>
         </button>
-        <button class="quick-btn" onclick="goTab('moving')">
-          <span class="quick-icon">📅</span><span>이사날짜</span>
-        </button>
         <button class="quick-btn" onclick="goTab('market')">
           <span class="quick-icon">📊</span><span>시세</span>
         </button>
         <button class="quick-btn" onclick="goTab('loan')">
           <span class="quick-icon">💰</span><span>대출</span>
         </button>
+        <button class="quick-btn" onclick="ChecklistView.setTab('pungsu');goTab('checklist')">
+          <span class="quick-icon">🧭</span><span>풍수지리</span>
+        </button>
+      </div>
+
+      <!-- 손없는날 바로 확인 배너 -->
+      <button onclick="goTab('moving')" style="width:100%;cursor:pointer;
+        background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);
+        border:1px solid rgba(196,164,90,.35);
+        border-left:3px solid var(--gold);
+        border-radius:4px;padding:16px 18px;margin-bottom:16px;
+        display:flex;align-items:center;gap:14px;font-family:inherit;text-align:left;
+        box-shadow:0 4px 20px rgba(15,22,40,.15)">
+        <div style="font-size:28px;flex-shrink:0">📅</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;color:var(--gold);font-size:14px;margin-bottom:5px;letter-spacing:-.2px">손없는날 바로 확인</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">이사에 좋은 날을 달력으로 확인하고<br>카카오 상담으로 계약 날짜를 잡아보세요</div>
+        </div>
+        <div style="flex-shrink:0;font-size:20px;color:var(--gold)">›</div>
+      </button>
+
+      <!-- 어떤 분이세요? -->
+      <div class="section-title" style="margin-bottom:4px">어떤 분이세요?</div>
+      <div style="font-size:11px;color:var(--on-muted);margin-bottom:10px">매도·매수·임대·임차 — 더불어 함께합니다</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <button onclick="goTab('register')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
+          <div style="font-size:22px;margin-bottom:6px">🏗️</div>
+          <div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px">매도자</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">건물 매도·처분<br>전문가 상담</div>
+        </button>
+        <button onclick="goTab('listings')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
+          <div style="font-size:22px;margin-bottom:6px">💼</div>
+          <div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px">매수자</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">건물 매입 탐색<br>건축사 사전 검토</div>
+        </button>
+        <button onclick="goTab('register')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
+          <div style="font-size:22px;margin-bottom:6px">🗝️</div>
+          <div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px">임대인</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">공간 임대 등록<br>세입자 연결</div>
+        </button>
+        <button onclick="goTab('listings')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
+          <div style="font-size:22px;margin-bottom:6px">🔍</div>
+          <div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px">임차인</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">상가·사무실 임차<br>권리금 정보</div>
+        </button>
+      </div>
+
+      <!-- 추천 매물 -->
+      <div class="section-title" style="margin-bottom:12px">추천 매물</div>
+      <div style="background:var(--surface);border-radius:4px;overflow:hidden;border:1px solid var(--border);margin-bottom:16px">
+        ${recCards}
       </div>
 
       <!-- 서류 발급 사이트 -->

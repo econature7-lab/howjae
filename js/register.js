@@ -3,6 +3,7 @@
  */
 window.RegisterView = (function() {
   let selectedRole = null;
+  let activeSubTab = 'register'; // 'register' | 'board'
 
   const ROLES = [
     { key:'seller',   icon:'🏠', label:'매도자',      desc:'건물·부동산 팔고 싶어요' },
@@ -35,9 +36,23 @@ window.RegisterView = (function() {
     <div style="padding:0 16px;min-height:100%;background:var(--bg);padding-bottom:70px">
       <div class="page-header">
         <div class="page-header-title">등록하기</div>
-        <div class="page-header-sub">하우재 사람 풀에 등록하세요</div>
+        <div class="page-header-sub">하우재 사람 풀 · 나가는 임차인</div>
       </div>
 
+      <!-- 서브 탭 -->
+      <div class="list-filter-bar" style="margin-bottom:16px">
+        <button class="list-filter-btn ${activeSubTab==='register'?'active':''}"
+          onclick="RegisterView.setSubTab('register')">📝 등록하기</button>
+        <button class="list-filter-btn ${activeSubTab==='board'?'active':''}"
+          onclick="RegisterView.setSubTab('board')">🚪 나가는 임차인</button>
+      </div>
+
+      ${activeSubTab === 'board' ? renderBoard() : renderRegisterForm()}
+    </div>`;
+  }
+
+  function renderRegisterForm() {
+    return `
       <div style="font-size:13px;color:var(--on-muted);margin-bottom:18px;line-height:1.8;
         background:var(--navy2);border-radius:4px;padding:14px;border-left:3px solid var(--gold)">
         역할을 선택하고 간단한 정보를 남겨주세요.<br>
@@ -64,8 +79,7 @@ window.RegisterView = (function() {
       ${selectedRole ? renderForm() : `
         <div style="text-align:center;padding:20px 0;color:var(--on-muted);font-size:13px">
           ↑ 위에서 역할을 선택해주세요
-        </div>`}
-    </div>`;
+        </div>`}`;
   }
 
   function renderForm() {
@@ -209,5 +223,82 @@ window.RegisterView = (function() {
     </div>`;
   }
 
-  return { render, selectRole, submit };
+  /* ── 서브탭 전환 ── */
+  function setSubTab(t) {
+    activeSubTab = t;
+    selectedRole = null;
+    render();
+  }
+
+  /* ── 나가는 임차인 게시판 ── */
+  function renderBoard() {
+    setTimeout(_loadBoard, 0);
+    return `
+      <div id="board-container" style="min-height:120px">
+        <div style="text-align:center;padding:40px;color:var(--on-muted)">
+          <div style="font-size:24px;margin-bottom:8px">⏳</div>불러오는 중...
+        </div>
+      </div>`;
+  }
+
+  async function _loadBoard() {
+    const container = document.getElementById('board-container');
+    if (!container) return;
+    const disclaimer = `
+      <div style="background:rgba(255,150,50,.06);border:1px solid rgba(255,150,50,.2);
+        border-radius:4px;padding:12px 14px;margin-bottom:14px;font-size:11px;
+        color:rgba(255,200,100,.85);line-height:1.8">
+        ⚠️ 이 게시판은 정보 공유 목적입니다. 하우재는 게시 내용에 법적 책임을 지지 않으며,
+        실제 계약은 공인중개사를 통해 진행하세요.
+      </div>`;
+    try {
+      const items = await DB.getRegisterPool('outgoing', 'approved');
+      if (!items || !items.length) {
+        container.innerHTML = disclaimer + `
+          <div style="text-align:center;padding:40px 20px;background:var(--navy2);
+            border-radius:4px;border:1px solid var(--border)">
+            <div style="font-size:48px;margin-bottom:14px">🚪</div>
+            <div style="font-size:14px;font-weight:700;color:white;margin-bottom:8px">등록된 자리가 없습니다</div>
+            <div style="font-size:12px;color:var(--on-muted);line-height:1.8;margin-bottom:14px">
+              나가는 임차인으로 등록하시면<br>인수자를 찾아드립니다.
+            </div>
+            <button onclick="RegisterView.setSubTab('register');
+              setTimeout(()=>RegisterView.selectRole('outgoing'),100)"
+              style="background:var(--gold);color:#1A2340;border:none;border-radius:3px;
+              padding:10px 20px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">
+              나가는 임차인으로 등록
+            </button>
+          </div>`;
+        return;
+      }
+      container.innerHTML = disclaimer + items.map(_renderBoardCard).join('');
+    } catch(e) {
+      container.innerHTML = disclaimer +
+        '<div style="text-align:center;padding:20px;color:var(--on-muted)">불러오기 실패</div>';
+    }
+  }
+
+  function _renderBoardCard(item) {
+    const d = item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString('ko-KR', {month:'short', day:'numeric'})
+      : '';
+    return `
+    <div class="card" style="margin-bottom:12px;border-left:3px solid rgba(255,160,50,.5)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:11px;background:rgba(255,150,50,.12);color:rgba(255,185,80,.9);
+          padding:3px 8px;border-radius:2px;font-weight:600">🚪 나가는 임차인</span>
+        <span style="font-size:10px;color:var(--on-muted)">${d}</span>
+      </div>
+      ${item.desc ? `<div style="font-size:13px;color:rgba(255,255,255,.85);line-height:1.8;
+        margin-bottom:10px">${item.desc}</div>` : ''}
+      <a href="https://open.kakao.com/o/hawujae" target="_blank"
+        style="display:block;text-align:center;padding:9px;
+        background:rgba(196,164,90,.1);border:1px solid rgba(196,164,90,.3);
+        border-radius:3px;font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">
+        💬 인수 문의 (카카오 상담)
+      </a>
+    </div>`;
+  }
+
+  return { render, selectRole, submit, setSubTab };
 })();

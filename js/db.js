@@ -3,8 +3,10 @@
  * 설정 안 됐으면 localStorage 폴백, 설정되면 Firestore 우선
  */
 window.DB = (function () {
-  const COL = 'listings';
+  const COL       = 'listings';
   const LOCAL_KEY = 'hawujae_listings';
+  const REG_COL   = 'register_pool';
+  const REG_LOCAL = 'hawujae_reg_pool';
   let _db = null;
   let _ready = false;
   let _usingFirestore = false;
@@ -146,5 +148,57 @@ window.DB = (function () {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(list));
   }
 
-  return { init, isConfigured, usingFirestore, getAll, save, remove, nextId, seedFirestore };
+  /* ────────── 사람 풀 (등록 신청) ────────── */
+
+  async function saveRegister(data) {
+    // localStorage 항상 백업
+    const list = JSON.parse(localStorage.getItem(REG_LOCAL) || '[]');
+    list.push({ ...data, localId: String(Date.now()) });
+    localStorage.setItem(REG_LOCAL, JSON.stringify(list));
+    if (_usingFirestore) {
+      try {
+        await _db.collection(REG_COL).add(data);
+        return true;
+      } catch (e) { console.error('[DB] saveRegister error:', e); }
+    }
+    return true;
+  }
+
+  async function getRegisterPool(roleFilter, statusFilter) {
+    if (_usingFirestore) {
+      try {
+        let ref = _db.collection(REG_COL);
+        const snap = roleFilter
+          ? await ref.where('role', '==', roleFilter).get()
+          : await ref.get();
+        let list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (statusFilter) list = list.filter(r => r.status === statusFilter);
+        list.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+        return list;
+      } catch (e) { console.error('[DB] getRegisterPool error:', e); }
+    }
+    let list = JSON.parse(localStorage.getItem(REG_LOCAL) || '[]');
+    if (roleFilter)  list = list.filter(r => r.role   === roleFilter);
+    if (statusFilter) list = list.filter(r => r.status === statusFilter);
+    return list;
+  }
+
+  async function approveRegister(id, approved) {
+    const status = approved ? 'approved' : 'rejected';
+    const ts = new Date().toISOString();
+    if (_usingFirestore) {
+      try {
+        await _db.collection(REG_COL).doc(id).update({ status, reviewedAt: ts });
+        return true;
+      } catch (e) { console.error('[DB] approveRegister error:', e); return false; }
+    }
+    const list = JSON.parse(localStorage.getItem(REG_LOCAL) || '[]');
+    const idx = list.findIndex(r => r.localId === id || r.id === id);
+    if (idx >= 0) { list[idx].status = status; list[idx].reviewedAt = ts; }
+    localStorage.setItem(REG_LOCAL, JSON.stringify(list));
+    return true;
+  }
+
+  return { init, isConfigured, usingFirestore, getAll, save, remove, nextId, seedFirestore,
+           saveRegister, getRegisterPool, approveRegister };
 })();

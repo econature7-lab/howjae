@@ -178,6 +178,9 @@
     <div style="display:flex;align-items:center;gap:10px">
       <span class="db-status loading" id="db-status">⏳ 연결 중...</span>
       <button class="seed-btn" id="seed-btn" onclick="seedToFirestore()" style="display:none">☁️ Firestore 업로드</button>
+      <a href="admin-pool.html" style="padding:6px 14px;border:1px solid rgba(196,164,90,.4);
+        background:transparent;color:var(--gold);border-radius:var(--radius);
+        font-size:11px;text-decoration:none;font-weight:600">👥 사람 풀</a>
       <button class="logout-btn" onclick="doLogout()">로그아웃</button>
     </div>
   </header>
@@ -494,7 +497,7 @@ function renderTable() {
 }
 
 /* ── 등록 / 수정 ── */
-function submitListing() {
+async function submitListing() {
   const title = document.getElementById('f-title').value.trim();
   const shortAddr = document.getElementById('f-short-addr').value.trim();
   const fullAddr = document.getElementById('f-full-addr').value.trim();

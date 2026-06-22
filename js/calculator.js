@@ -1,6 +1,6 @@
 /**
  * calculator.js — 부동산 계산기
- * 전월세 전환 / 수익률 / 대출 이자 3종
+ * 전월세 전환 / 수익률 / 대출 이자 3종 + 외부 링크
  */
 window.CalcView = (function () {
   let activeCalc = 'convert';
@@ -19,7 +19,7 @@ window.CalcView = (function () {
       <!-- 계산기 탭 -->
       <div class="calc-tab-bar">
         <button class="calc-tab-btn ${activeCalc==='convert'?'active':''}" data-key="convert"
-          onclick="CalcView.switchCalc('convert')">⇄ 전월세 전환</button>
+          onclick="CalcView.switchCalc('convert')">⇄ 전월세</button>
         <button class="calc-tab-btn ${activeCalc==='yield'?'active':''}" data-key="yield"
           onclick="CalcView.switchCalc('yield')">% 수익률</button>
         <button class="calc-tab-btn ${activeCalc==='loan'?'active':''}" data-key="loan"
@@ -29,6 +29,9 @@ window.CalcView = (function () {
       <div id="calc-body" style="padding:16px">
         ${getCalcBody()}
       </div>
+
+      <!-- 공공 데이터 바로가기 (공통) -->
+      ${renderLinks()}
     </div>`;
   }
 
@@ -39,12 +42,44 @@ window.CalcView = (function () {
     return '';
   }
 
+  /* ── 공공 데이터 링크 ── */
+  function renderLinks() {
+    const links = [
+      { icon:'🏛️', label:'법원 경매정보',   sub:'낙찰가·입찰 일정 조회', url:'https://www.courtauction.go.kr' },
+      { icon:'🏠', label:'국토부 실거래가', sub:'아파트·상가·토지 실거래',  url:'https://rt.molit.go.kr' },
+      { icon:'📑', label:'인터넷 등기소',   sub:'등기부등본 열람·발급',     url:'https://www.iros.go.kr' },
+      { icon:'🏢', label:'건축물대장',      sub:'위반건축물·용도 확인',     url:'https://www.gov.kr/portal/main' },
+    ];
+    return `
+    <div style="padding:0 16px 16px">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);
+        letter-spacing:.5px;margin-bottom:10px;opacity:.8">🔗 공공 데이터 바로가기</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${links.map(l => `
+          <a href="${l.url}" target="_blank"
+            style="background:var(--navy2);border:1px solid rgba(196,164,90,.2);
+            border-radius:4px;padding:12px;text-decoration:none;
+            display:flex;flex-direction:column;gap:3px">
+            <div style="font-size:18px">${l.icon}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--gold)">${l.label}</div>
+            <div style="font-size:10px;color:var(--on-muted);line-height:1.4">${l.sub}</div>
+          </a>`).join('')}
+      </div>
+    </div>`;
+  }
+
   /* ── 전월세 전환 계산기 ── */
   function renderConvert() {
     return `
     <div class="calc-card fade-in">
-      <div class="calc-card-title">⇄ 전월세 전환 계산기</div>
-      <p class="calc-desc">전세금을 월세로 바꾸거나, 반대로 계산합니다.</p>
+      <!-- 설명 배너 -->
+      <div style="background:rgba(196,164,90,.08);border-left:3px solid var(--gold);
+        border-radius:0 4px 4px 0;padding:10px 12px;margin-bottom:16px;font-size:12px;
+        color:var(--on-muted);line-height:1.7">
+        <b style="color:var(--gold)">전세 ↔ 월세 환산 계산기</b><br>
+        전세금을 월세로, 혹은 월세를 전세금으로 바꿀 때 사용해요.<br>
+        임대인·임차인 조건 협상 시 활용합니다.
+      </div>
 
       <div class="calc-mode-row">
         <button class="calc-mode-btn active" id="cm-ts" onclick="CalcView.setConvertMode('toMonthly')">전세 → 월세</button>
@@ -102,19 +137,26 @@ window.CalcView = (function () {
   function renderYield() {
     return `
     <div class="calc-card fade-in">
-      <div class="calc-card-title">% 수익률 계산기</div>
-      <p class="calc-desc">건물·상가 투자 수익률을 분석합니다.</p>
+      <!-- 설명 배너 -->
+      <div style="background:rgba(196,164,90,.08);border-left:3px solid var(--gold);
+        border-radius:0 4px 4px 0;padding:10px 12px;margin-bottom:16px;font-size:12px;
+        color:var(--on-muted);line-height:1.7">
+        <b style="color:var(--gold)">건물·상가 투자 수익률 분석기</b><br>
+        매매가 대비 연간 임대 수익이 몇 %인지 계산해요.<br>
+        대출 이자·관리비 차감 후 <b style="color:rgba(255,255,255,.8)">순수익률</b>까지 보여줍니다.
+      </div>
+
       <div class="form-group">
         <label class="form-label">매매가 (만원)</label>
         <input class="form-input" type="number" id="yd-price" placeholder="예: 300000" oninput="CalcView.calcYield()">
       </div>
       <div class="form-group">
         <label class="form-label">연 임대 수입 (만원/년)</label>
-        <input class="form-input" type="number" id="yd-income" placeholder="예: 14400" oninput="CalcView.calcYield()">
+        <input class="form-input" type="number" id="yd-income" placeholder="예: 14400 (월 120 × 12)" oninput="CalcView.calcYield()">
       </div>
       <div class="form-group">
         <label class="form-label">연 유지비용 (만원/년)</label>
-        <input class="form-input" type="number" id="yd-cost" placeholder="예: 1200" oninput="CalcView.calcYield()">
+        <input class="form-input" type="number" id="yd-cost" placeholder="예: 1200 (재산세·보험 등)" oninput="CalcView.calcYield()">
       </div>
       <div class="form-group">
         <label class="form-label">대출금액 (만원, 없으면 0)</label>
@@ -132,22 +174,43 @@ window.CalcView = (function () {
   function renderLoan() {
     return `
     <div class="calc-card fade-in">
-      <div class="calc-card-title">₩ 대출 이자 계산기</div>
-      <p class="calc-desc">원리금 균등상환 기준으로 계산합니다.</p>
+      <!-- 설명 배너 -->
+      <div style="background:rgba(196,164,90,.08);border-left:3px solid var(--gold);
+        border-radius:0 4px 4px 0;padding:10px 12px;margin-bottom:16px;font-size:12px;
+        color:var(--on-muted);line-height:1.7">
+        <b style="color:var(--gold)">대출 원리금 균등상환 계산기</b><br>
+        매달 동일 금액을 상환하는 일반 주담대 기준이에요.<br>
+        금리·기간 바꿔가며 <b style="color:rgba(255,255,255,.8)">총 이자 차이</b>를 비교해보세요.
+      </div>
+
       <div class="form-group">
         <label class="form-label">대출 금액 (만원)</label>
         <input class="form-input" type="number" id="ln-amount" placeholder="예: 30000" oninput="CalcView.calcLoan()">
       </div>
+
+      <!-- 금리 + 실시간 월 납입금 나란히 -->
       <div class="form-group">
         <label class="form-label">연 이자율 (%)</label>
-        <input class="form-input" type="number" id="ln-rate" placeholder="예: 4.5" step="0.1" value="4.5" oninput="CalcView.calcLoan()">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch">
+          <input class="form-input" type="number" id="ln-rate"
+            placeholder="예: 4.5" step="0.1" value="4.5"
+            style="margin:0" oninput="CalcView.calcLoan()">
+          <div id="ln-live" style="background:var(--navy);border-radius:4px;
+            padding:10px 12px;display:flex;flex-direction:column;justify-content:center;
+            border:1px solid rgba(196,164,90,.25)">
+            <div style="font-size:10px;color:var(--on-muted);margin-bottom:3px">월 납입금</div>
+            <div id="ln-live-val" style="font-size:15px;font-weight:800;color:var(--gold)">—</div>
+          </div>
+        </div>
       </div>
+
       <div class="form-group">
         <label class="form-label">대출 기간 (년)</label>
         <div style="display:flex;gap:6px;flex-wrap:wrap">
           ${[10,15,20,30].map(y=>`<button class="calc-period-btn" data-year="${y}" onclick="CalcView.setPeriod(${y})">${y}년</button>`).join('')}
         </div>
-        <input class="form-input" type="number" id="ln-years" placeholder="예: 30" value="30" style="margin-top:8px" oninput="CalcView.calcLoan()">
+        <input class="form-input" type="number" id="ln-years"
+          placeholder="예: 30" value="30" style="margin-top:8px" oninput="CalcView.calcLoan()">
       </div>
     </div>
     <div class="calc-result-card" id="loan-result" style="display:none"></div>
@@ -223,6 +286,20 @@ window.CalcView = (function () {
     const amount = parseFloat(document.getElementById('ln-amount')?.value) || 0;
     const rate   = parseFloat(document.getElementById('ln-rate')?.value) || 4.5;
     const years  = parseFloat(document.getElementById('ln-years')?.value) || 30;
+
+    // 실시간 월 납입금 (금리 옆 박스)
+    const liveEl = document.getElementById('ln-live-val');
+    if (liveEl) {
+      if (amount && rate && years) {
+        const r  = rate / 100 / 12;
+        const n  = years * 12;
+        const m  = amount * 10000 * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+        liveEl.textContent = `${Math.round(m / 10000 * 10) / 10}만원`;
+      } else {
+        liveEl.textContent = '—';
+      }
+    }
+
     if (!amount || !rate || !years) return;
 
     const r  = rate / 100 / 12;
@@ -275,7 +352,8 @@ window.CalcView = (function () {
     document.getElementById('cm-tj')?.classList.toggle('active', mode === 'toJeonse');
     const inp = document.getElementById('convert-inputs');
     if (inp) inp.innerHTML = mode === 'toMonthly' ? renderConvertToMonthly() : renderConvertToJeonse();
-    document.getElementById('convert-result').style.display = 'none';
+    const res = document.getElementById('convert-result');
+    if (res) res.style.display = 'none';
   }
 
   function setPeriod(y) {

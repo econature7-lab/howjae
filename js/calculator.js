@@ -26,12 +26,12 @@ window.CalcView = (function () {
           onclick="CalcView.switchCalc('loan')">₩ 대출</button>
       </div>
 
+      <!-- 공공 데이터 바로가기 (탭 바 아래 고정 표시) -->
+      ${renderLinks()}
+
       <div id="calc-body" style="padding:16px">
         ${getCalcBody()}
       </div>
-
-      <!-- 공공 데이터 바로가기 (공통) -->
-      ${renderLinks()}
     </div>`;
   }
 

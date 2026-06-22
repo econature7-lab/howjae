@@ -3,7 +3,7 @@
  * 하우재 공인중개사사무소
  */
 
-const CACHE_NAME = 'hawujae-v5';
+const CACHE_NAME = 'hawujae-v6';
 
 // 캐시할 핵심 파일들
 const CORE_ASSETS = [
@@ -71,19 +71,36 @@ self.addEventListener('fetch', (e) => {
     return; // 브라우저 기본 처리
   }
 
+  // JS/CSS 정적 파일: stale-while-revalidate (캐시 즉시 반환 + 백그라운드 업데이트)
+  const isStaticAsset =
+    url.includes('/js/') || url.includes('/css/') || url.includes('/assets/');
+
+  if (isStaticAsset) {
+    e.respondWith(
+      caches.open(CACHE_NAME).then((cache) =>
+        cache.match(e.request).then((cached) => {
+          const networkFetch = fetch(e.request).then((res) => {
+            if (res && res.status === 200) cache.put(e.request, res.clone());
+            return res;
+          }).catch(() => null);
+          // 캐시 있으면 즉시 반환, 없으면 네트워크 기다림
+          return cached || networkFetch;
+        })
+      )
+    );
+    return;
+  }
+
+  // HTML 등 나머지: 네트워크 우선, 실패 시 캐시 폴백
   e.respondWith(
     fetch(e.request)
       .then((response) => {
-        // 성공하면 캐시도 업데이트
         if (response && response.status === 200) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
         }
         return response;
       })
-      .catch(() => {
-        // 오프라인 시 캐시에서 응답
-        return caches.match(e.request);
-      })
+      .catch(() => caches.match(e.request))
   );
 });

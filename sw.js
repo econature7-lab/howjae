@@ -3,7 +3,7 @@
  * 하우재 공인중개사사무소
  */
 
-const CACHE_NAME = 'hawujae-v2';
+const CACHE_NAME = 'hawujae-v3';
 
 // 캐시할 핵심 파일들
 const CORE_ASSETS = [
@@ -13,6 +13,9 @@ const CORE_ASSETS = [
   '/budongsan-saju/js/db.js',
   '/budongsan-saju/js/lunar.js',
   '/budongsan-saju/js/moving.js',
+  '/budongsan-saju/js/partner.js',
+  '/budongsan-saju/js/checklist.js',
+  '/budongsan-saju/js/register.js',
   '/budongsan-saju/js/data.js',
   '/budongsan-saju/js/listings.js',
   '/budongsan-saju/js/calculator.js',

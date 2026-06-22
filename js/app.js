@@ -20,12 +20,12 @@ let S = {
 };
 
 const NAV_ITEMS = [
-  { key:'home',      icon:'⌂',  label:'홈'    },
-  { key:'listings',  icon:'⊞',  label:'매물'   },
-  { key:'map',       icon:'◎',  label:'지도'   },
-  { key:'calc',      icon:'⊟',  label:'계산기'  },
-  { key:'moving',    icon:'📅', label:'이사날짜' },
-  { key:'consult',   icon:'💬', label:'상담'   }
+  { key:'home',      icon:'⌂',  label:'홈'      },
+  { key:'listings',  icon:'⊞',  label:'매물'     },
+  { key:'partner',   icon:'🔨', label:'파트너'    },
+  { key:'checklist', icon:'✅', label:'체크리스트' },
+  { key:'register',  icon:'📝', label:'등록'     },
+  { key:'consult',   icon:'💬', label:'상담'     },
 ];
 
 /* ── 앱 껍데기 ── */
@@ -67,13 +67,17 @@ function renderScreen() {
   if (!wrap) return;
   if (S.detailId !== null) { wrap.innerHTML = renderDetailPage(); return; }
   switch(S.tab) {
-    case 'home':      wrap.innerHTML = renderHome();             break;
-    case 'listings':  wrap.innerHTML = renderListings();         break;
-    case 'map':       wrap.innerHTML = MapView.renderScreen();   break;
-    case 'calc':      wrap.innerHTML = CalcView.render();        break;
-    case 'moving':    MovingView.render(); return;
-    case 'consult':   wrap.innerHTML = renderConsult();          break;
-    default:          wrap.innerHTML = renderHome();             break;
+    case 'home':       wrap.innerHTML = renderHome();             break;
+    case 'listings':   wrap.innerHTML = renderListings();         break;
+    case 'partner':    PartnerView.render();    return;
+    case 'checklist':  ChecklistView.render();  return;
+    case 'register':   RegisterView.render();   return;
+    case 'consult':    wrap.innerHTML = renderConsult();          break;
+    // 숨겨진 경로 (버튼으로 접근 가능)
+    case 'map':        wrap.innerHTML = MapView.renderScreen();   break;
+    case 'calc':       wrap.innerHTML = CalcView.render();        break;
+    case 'moving':     MovingView.render(); return;
+    default:           wrap.innerHTML = renderHome();             break;
   }
   wrap.scrollTop = 0;
 }

@@ -7,22 +7,22 @@ const CACHE_NAME = 'hawujae-v3';
 
 // 캐시할 핵심 파일들
 const CORE_ASSETS = [
-  '/budongsan-saju/app.html',
-  '/budongsan-saju/css/style.css',
-  '/budongsan-saju/js/firebase-config.js',
-  '/budongsan-saju/js/db.js',
-  '/budongsan-saju/js/lunar.js',
-  '/budongsan-saju/js/moving.js',
-  '/budongsan-saju/js/partner.js',
-  '/budongsan-saju/js/checklist.js',
-  '/budongsan-saju/js/register.js',
-  '/budongsan-saju/js/data.js',
-  '/budongsan-saju/js/listings.js',
-  '/budongsan-saju/js/calculator.js',
-  '/budongsan-saju/js/map.js',
-  '/budongsan-saju/js/app.js',
-  '/budongsan-saju/assets/logo.png',
-  '/budongsan-saju/manifest.json'
+  '/howjae/app.html',
+  '/howjae/css/style.css',
+  '/howjae/js/firebase-config.js',
+  '/howjae/js/db.js',
+  '/howjae/js/lunar.js',
+  '/howjae/js/moving.js',
+  '/howjae/js/partner.js',
+  '/howjae/js/checklist.js',
+  '/howjae/js/register.js',
+  '/howjae/js/data.js',
+  '/howjae/js/listings.js',
+  '/howjae/js/calculator.js',
+  '/howjae/js/map.js',
+  '/howjae/js/app.js',
+  '/howjae/assets/logo.png',
+  '/howjae/manifest.json'
 ];
 
 // 설치: 핵심 파일 캐시

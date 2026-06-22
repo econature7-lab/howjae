@@ -11,10 +11,11 @@
  * ─────────────────────────────────────────────
  */
 window.FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyChJoq3tvZGgj8cja1EiBn8FbaV1_r0I8I",
+  authDomain:        "howjae-tool-2026-1d0e2.firebaseapp.com",
+  projectId:         "howjae-tool-2026-1d0e2",
+  storageBucket:     "howjae-tool-2026-1d0e2.firebasestorage.app",
+  messagingSenderId: "99264156857",
+  appId:             "1:99264156857:web:ba146e4d40cbc85cb87768",
+  measurementId:     "G-K7F0B202FJ"
 };

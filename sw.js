@@ -1,10 +1,10 @@
-/**
- * sw.js — Service Worker (PWA 오프라인 캐시)
- * 하우재 공인중개사사무소
- * 전략: 네트워크 우선 → 실패 시 캐시 폴백 + 새 버전 시 자동 새로고침
+﻿/**
+ * sw.js ??Service Worker (PWA ?ㅽ봽?쇱씤 罹먯떆)
+ * ?섏슦??怨듭씤以묎컻?ъ궗臾댁냼
+ * ?꾨왂: ?ㅽ듃?뚰겕 ?곗꽑 ???ㅽ뙣 ??罹먯떆 ?대갚 + ??踰꾩쟾 ???먮룞 ?덈줈怨좎묠
  */
 
-const CACHE_NAME = 'hawujae-v17';
+const CACHE_NAME = 'hawujae-v18';
 
 const CORE_ASSETS = [
   '/howjae/app.html',
@@ -26,19 +26,19 @@ const CORE_ASSETS = [
   '/howjae/manifest.json'
 ];
 
-// 설치
+// ?ㅼ튂
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) =>
       cache.addAll(CORE_ASSETS).catch((err) =>
-        console.warn('[SW] 일부 파일 캐시 실패 (무시):', err)
+        console.warn('[SW] ?쇰? ?뚯씪 罹먯떆 ?ㅽ뙣 (臾댁떆):', err)
       )
     )
   );
   self.skipWaiting();
 });
 
-// 활성화: 구버전 삭제 → 클라이언트 인수 → 자동 새로고침 알림
+// ?쒖꽦?? 援щ쾭????젣 ???대씪?댁뼵???몄닔 ???먮룞 ?덈줈怨좎묠 ?뚮┝
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
@@ -53,7 +53,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// 요청 처리: 네트워크 우선, 오프라인만 캐시 사용
+// ?붿껌 泥섎━: ?ㅽ듃?뚰겕 ?곗꽑, ?ㅽ봽?쇱씤留?罹먯떆 ?ъ슜
 self.addEventListener('fetch', (e) => {
   const url = e.request.url;
   if (

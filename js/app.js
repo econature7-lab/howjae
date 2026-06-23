@@ -179,7 +179,7 @@ function renderHome() {
         <button onclick="goTab('listings')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
           <div style="font-size:22px;margin-bottom:6px">💼</div>
           <div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px">매수자</div>
-          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">건물 매입 탐색<br>건축사 사전 검토</div>
+          <div style="font-size:10px;color:var(--on-muted);line-height:1.5">건물 매입 탐색<br>전문가 상담 연결</div>
         </button>
         <button onclick="goTab('register')" style="background:var(--navy2);border:1px solid rgba(196,164,90,.22);border-radius:6px;padding:14px 12px;text-align:left;cursor:pointer;font-family:inherit">
           <div style="font-size:22px;margin-bottom:6px">🗝️</div>
@@ -345,7 +345,7 @@ function renderConsult() {
   <div style="padding:0 16px 20px;background:var(--bg);min-height:100%;padding-bottom:70px">
     <div class="page-header">
       <div class="page-header-title">상담</div>
-      <div class="page-header-sub">건축사+공인중개사 원스톱 상담</div>
+      <div class="page-header-sub">언제나 당신 편, 하우재</div>
     </div>
 
     <!-- 카카오 오픈카톡 메인 CTA -->

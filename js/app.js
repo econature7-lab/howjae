@@ -243,8 +243,7 @@ function renderHome() {
         <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
           원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold);font-weight:600">협력사 건축사사무소 하우재</span>와 함께,
-          건물 매입부터 건축 검토까지 전문가 연결.
+          <span style="color:rgba(255,255,255,.45);font-size:12px">인테리어·건축 전문가와 함께하는 공인중개사사무소</span>
         </p>
       </div>
 

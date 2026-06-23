@@ -1,10 +1,10 @@
 /**
  * sw.js — Service Worker (PWA 오프라인 캐시)
  * 하우재 공인중개사사무소
- * 전략: 네트워크 우선 → 실패 시 캐시 폴백 (항상 최신 버전 표시)
+ * 전략: 네트워크 우선 → 실패 시 캐시 폴백 + 새 버전 시 자동 새로고침
  */
 
-const CACHE_NAME = 'hawujae-v12';
+const CACHE_NAME = 'hawujae-v13';
 
 const CORE_ASSETS = [
   '/howjae/app.html',
@@ -29,32 +29,33 @@ const CORE_ASSETS = [
 // 설치
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS).catch((err) => {
-        console.warn('[SW] 일부 파일 캐시 실패 (무시):', err);
-      });
-    })
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(CORE_ASSETS).catch((err) =>
+        console.warn('[SW] 일부 파일 캐시 실패 (무시):', err)
+      )
+    )
   );
   self.skipWaiting();
 });
 
-// 활성화: 구버전 캐시 삭제
+// 활성화: 구버전 삭제 → 클라이언트 인수 → 자동 새로고침 알림
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
+    caches.keys()
+      .then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
       )
-    )
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: 'window', includeUncontrolled: true }))
+      .then((clients) => {
+        clients.forEach((client) => client.postMessage({ type: 'SW_UPDATED' }));
+      })
   );
-  self.clients.claim();
 });
 
-// 요청 처리: 모든 파일 네트워크 우선, 오프라인일 때만 캐시 사용
+// 요청 처리: 네트워크 우선, 오프라인만 캐시 사용
 self.addEventListener('fetch', (e) => {
   const url = e.request.url;
-
-  // 외부 CDN / Firebase는 SW 처리 안 함
   if (
     url.includes('firebaseio.com') ||
     url.includes('googleapis.com') ||
@@ -66,7 +67,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // 네트워크 우선 — 실패 시 캐시 폴백
   e.respondWith(
     fetch(e.request)
       .then((res) => {

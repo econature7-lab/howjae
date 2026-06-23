@@ -64,14 +64,14 @@
         if (hadController) _showUpdateToast();
       });
 
+      // SW 업데이트 메시지 수신 → 자동 새로고침
+      navigator.serviceWorker.addEventListener('message', (e) => {
+        if (e.data?.type === 'SW_UPDATED') window.location.reload();
+      });
+
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => {
-            console.log('[PWA] Service Worker 등록 완료:', reg.scope);
-            reg.addEventListener('updatefound', () => {
-              console.log('[PWA] 새 버전 감지');
-            });
-          })
+          .then(reg => console.log('[PWA] Service Worker 등록 완료:', reg.scope))
           .catch(err => console.warn('[PWA] Service Worker 등록 실패:', err));
       });
     }

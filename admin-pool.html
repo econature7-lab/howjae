@@ -169,8 +169,8 @@
       <button class="filter-btn" onclick="setRoleFilter('seller', this)">🏠 매도자</button>
       <button class="filter-btn" onclick="setRoleFilter('buyer', this)">🔍 매수자</button>
       <button class="filter-btn" onclick="setRoleFilter('landlord', this)">🔑 임대인</button>
-      <button class="filter-btn" onclick="setRoleFilter('tenant', this)">📋 임차인</button>
-      <button class="filter-btn" onclick="setRoleFilter('outgoing', this)">🚪 나가는</button>
+      <button class="filter-btn" onclick="setRoleFilter('tenant', this)">📋 신규임차인</button>
+      <button class="filter-btn" onclick="setRoleFilter('outgoing', this)">🤝 기존임차인</button>
       <button class="filter-btn" onclick="setRoleFilter('interior', this)">🎨 인테리어</button>
       <button class="filter-btn" onclick="setRoleFilter('reno', this)">🔨 리모델링</button>
     </div>
@@ -193,8 +193,8 @@ const ADMIN_PW    = '0000';
 const SESSION_KEY = 'hawujae_admin_ok';
 
 const ROLE_LABELS = {
-  seller:'매도자', buyer:'매수자', landlord:'임대인', tenant:'임차인',
-  outgoing:'나가는 임차인', interior:'인테리어 업체', reno:'리모델링 업체'
+  seller:'매도자', buyer:'매수자', landlord:'임대인', tenant:'신규임차인',
+  outgoing:'기존임차인 (자리 물려주기)', interior:'인테리어 업체', reno:'리모델링 업체'
 };
 const ROLE_ICONS = {
   seller:'🏠', buyer:'🔍', landlord:'🔑', tenant:'📋',

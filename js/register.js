@@ -9,8 +9,8 @@ window.RegisterView = (function() {
     { key:'seller',   icon:'🏠', label:'매도자',      desc:'건물·부동산 팔고 싶어요' },
     { key:'buyer',    icon:'🔍', label:'매수자',      desc:'건물·부동산 사고 싶어요' },
     { key:'landlord', icon:'🔑', label:'임대인',      desc:'공간을 임대하고 싶어요' },
-    { key:'tenant',   icon:'📋', label:'임차인',      desc:'공간을 임차하고 싶어요' },
-    { key:'outgoing', icon:'🚪', label:'나가는 임차인', desc:'권리금·자리 인수자 구해요' },
+    { key:'tenant',   icon:'📋', label:'신규임차인',    desc:'공간을 구하고 있어요' },
+    { key:'outgoing', icon:'🤝', label:'기존임차인',    desc:'자리 물려줄 분 찾아요' },
     { key:'interior', icon:'🎨', label:'인테리어 업체', desc:'파트너사로 등록할게요' },
     { key:'reno',     icon:'🔨', label:'리모델링 업체', desc:'파트너사로 등록할게요' },
   ];
@@ -36,7 +36,7 @@ window.RegisterView = (function() {
     <div style="padding:0 16px;min-height:100%;background:var(--bg);padding-bottom:70px">
       <div class="page-header">
         <div class="page-header-title">등록하기</div>
-        <div class="page-header-sub">하우재 사람 풀 · 나가는 임차인</div>
+        <div class="page-header-sub">하우재 사람 풀 · 자리 물려주기</div>
       </div>
 
       <!-- 서브 탭 -->
@@ -44,7 +44,7 @@ window.RegisterView = (function() {
         <button class="list-filter-btn ${activeSubTab==='register'?'active':''}"
           onclick="RegisterView.setSubTab('register')">📝 등록하기</button>
         <button class="list-filter-btn ${activeSubTab==='board'?'active':''}"
-          onclick="RegisterView.setSubTab('board')">🚪 나가는 임차인</button>
+          onclick="RegisterView.setSubTab('board')">🤝 기존임차인 (자리 물려주기)</button>
       </div>
 
       ${activeSubTab === 'board' ? renderBoard() : renderRegisterForm()}

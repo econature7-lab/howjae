@@ -120,8 +120,8 @@ function renderHome() {
         </div>
         <span style="font-size:10px;color:var(--on-navy);letter-spacing:1px">${dateStr}</span>
       </div>
-      <div class="home-title">홍대 건물,<span class="home-title-gold"><br>중개사가 잡고<br>건축사가 확인합니다</span></div>
-      <div class="home-sub">건축사+공인중개사 병설 — 홍대·마포구</div>
+      <div class="home-title">언제나 <span class="home-title-gold">당신 편,</span><br>하우재</div>
+      <div class="home-sub">마포구 홍대·연남·합정·상수 일대<br>원룸·오피스텔부터 건물·토지까지</div>
     </div>
 
     <div style="padding:16px 16px 0">
@@ -241,8 +241,8 @@ function renderHome() {
         <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
           원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:var(--gold);font-weight:600">건축사+공인중개사 병설</span>로
-          건물 매입부터 건축 검토까지 원스톱 서비스.
+          <span style="color:var(--gold);font-weight:600">협력사 건축사사무소 하우재</span>와 함께,
+          건물 매입부터 건축 검토까지 전문가 연결.
         </p>
       </div>
 

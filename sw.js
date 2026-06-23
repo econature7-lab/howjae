@@ -4,7 +4,7 @@
  * 전략: 네트워크 우선 → 실패 시 캐시 폴백 + 새 버전 시 자동 새로고침
  */
 
-const CACHE_NAME = 'hawujae-v16';
+const CACHE_NAME = 'hawujae-v17';
 
 const CORE_ASSETS = [
   '/howjae/app.html',

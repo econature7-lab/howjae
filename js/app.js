@@ -243,7 +243,7 @@ function renderHome() {
         <p class="info-text" style="line-height:1.85;font-size:13px">
           마포구 홍대·연남·합정·상수동 일대.<br>
           원룸·오피스텔부터 건물·토지까지 전 유형 취급.<br>
-          <span style="color:rgba(255,255,255,.45);font-size:12px">인테리어·건축 전문가와 함께하는 공인중개사사무소</span>
+          <span style="color:rgba(255,255,255,.6);font-size:12px">인테리어·건축 전문가와 함께하는 공인중개사사무소</span>
         </p>
       </div>
 

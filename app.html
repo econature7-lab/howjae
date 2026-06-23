@@ -54,14 +54,53 @@
   <!-- 앱 메인 -->
   <script src="js/app.js"></script>
 
-  <!-- PWA Service Worker 등록 -->
+  <!-- PWA Service Worker 등록 + 자동 업데이트 토스트 -->
   <script>
     if ('serviceWorker' in navigator) {
+      // 기존 컨트롤러 있을 때만 토스트 표시 (첫 설치 제외)
+      const hadController = !!navigator.serviceWorker.controller;
+
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (hadController) _showUpdateToast();
+      });
+
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[PWA] Service Worker 등록 완료:', reg.scope))
+          .then(reg => {
+            console.log('[PWA] Service Worker 등록 완료:', reg.scope);
+            reg.addEventListener('updatefound', () => {
+              console.log('[PWA] 새 버전 감지');
+            });
+          })
           .catch(err => console.warn('[PWA] Service Worker 등록 실패:', err));
       });
+    }
+
+    function _showUpdateToast() {
+      if (document.getElementById('sw-toast')) return;
+      const el = document.createElement('div');
+      el.id = 'sw-toast';
+      el.innerHTML = `
+        <div style="position:fixed;bottom:76px;left:50%;transform:translateX(-50%);
+          background:#1A2340;border:1px solid rgba(196,164,90,.5);border-radius:6px;
+          padding:11px 14px;display:flex;align-items:center;gap:10px;z-index:9999;
+          box-shadow:0 4px 24px rgba(0,0,0,.5);white-space:nowrap;
+          animation:fadeInUp .3s ease">
+          <span style="font-size:12px;color:rgba(255,255,255,.85)">✨ 새 버전이 있어요</span>
+          <button onclick="location.reload()"
+            style="background:#C4A45A;color:#1A2340;border:none;border-radius:3px;
+            padding:5px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">
+            새로고침
+          </button>
+          <button onclick="this.closest('#sw-toast').remove()"
+            style="background:none;border:none;color:rgba(255,255,255,.4);font-size:16px;
+            cursor:pointer;padding:0 2px;line-height:1">✕</button>
+        </div>
+        <style>
+          @keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}
+          to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        </style>`;
+      document.body.appendChild(el);
     }
   </script>
 

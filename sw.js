@@ -4,7 +4,7 @@
  * ?꾨왂: ?ㅽ듃?뚰겕 ?곗꽑 ???ㅽ뙣 ??罹먯떆 ?대갚 + ??踰꾩쟾 ???먮룞 ?덈줈怨좎묠
  */
 
-const CACHE_NAME = 'hawujae-v19';
+const CACHE_NAME = 'hawujae-v20';
 
 const CORE_ASSETS = [
   '/howjae/app.html',

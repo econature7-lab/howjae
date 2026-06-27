@@ -1,0 +1,10 @@
+Keep this file and signing.keystore in a safe place. You'll need these files if you want to upload future versions of your PWA to the Google Play Store.
+
+Key store file: signing.keystore
+Key store password: TyQsyu49M7QR
+Key alias: my-key-alias
+Key password: TyQsyu49M7QR
+Signer's full name: 하우재부동산 Admin
+Signer's organization: 하우재 공인중개사사무소
+Signer's organizational unit: Engineering
+Signer's country code: US

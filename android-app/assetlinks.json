@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.hawujae.realestate",
+        "sha256_cert_fingerprints": ["3A:29:B7:44:0F:3E:91:E6:46:FD:27:E3:E5:AB:37:85:8E:D7:3F:3A:81:7B:89:DA:DC:A3:9A:AC:F7:E3:C5:F4"]
+      }
+    }]
